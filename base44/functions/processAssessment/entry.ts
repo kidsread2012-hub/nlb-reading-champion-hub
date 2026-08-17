@@ -8,7 +8,7 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { test_type, child_name, club_name, answers, assessment_date } = body;
+    const { test_type, child_name, club_name, answers, assessment_date, volunteer_email } = body;
 
     // Validate required fields
     if (!test_type || !child_name || !club_name || !answers) {
@@ -16,7 +16,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const volunteerName = user.full_name || user.email || 'Volunteer';
-    const volunteerEmail = user.email || '';
+    const volunteerEmail = volunteer_email || user.email || '';
     const today = assessment_date || new Date().toISOString().split('T')[0];
 
     // Calculate scores
@@ -38,26 +38,31 @@ export default async function(req: Request): Promise<Response> {
       competencies_needing_help: results.competenciesNeedingHelp,
     });
 
-    // Send summary email to volunteer
-    if (volunteerEmail) {
-      const emailBody = buildEmailBody({
-        test_type,
-        child_name,
-        club_name,
-        assessment_date: today,
-        volunteerName,
-        ...results,
-      });
+    // Send summary email to the default program inbox and the volunteer
+    const emailBody = buildEmailBody({
+      test_type,
+      child_name,
+      club_name,
+      assessment_date: today,
+      volunteerName,
+      ...results,
+    });
 
+    const recipients = ['kidsread@nlb.gov.sg'];
+    if (volunteerEmail && !recipients.includes(volunteerEmail.toLowerCase())) {
+      recipients.push(volunteerEmail);
+    }
+
+    for (const recipient of recipients) {
       try {
         await base44.asServiceRole.integrations.Core.SendEmail({
-          to: volunteerEmail,
+          to: recipient,
           subject: `kidsREAD ${test_type === 'pre' ? 'Pre' : 'Post'}-Test Results — ${child_name} (${club_name})`,
           body: emailBody,
         });
       } catch (emailErr) {
         // Email failure should not block the assessment result
-        console.error('Email send failed:', emailErr.message);
+        console.error(`Email send failed for ${recipient}:`, emailErr.message);
       }
     }
 
