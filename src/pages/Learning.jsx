@@ -109,11 +109,10 @@ export default function Learning() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Self-Paced Learning</h1>
-        <p className="text-lg text-muted-foreground">
-          Build your skills as a Reading Champion. You've completed {completedCount} of{' '}
-          {modules.length} modules across two learning segments.
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Self-Paced Learning</h1>
+        <p className="text-base md:text-lg text-muted-foreground">
+          {modules.length} modules across two segments · {completedCount} completed so far.
         </p>
       </div>
 

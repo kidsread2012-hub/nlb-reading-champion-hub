@@ -93,13 +93,13 @@ export default function CoachChat() {
   return (
     <div className="flex flex-col h-[calc(100vh-3.5rem)] md:h-screen max-w-3xl mx-auto">
       {/* Header */}
-      <div className="px-4 py-4 border-b border-border bg-card/50 backdrop-blur sticky top-0 z-10">
+      <div className="px-4 md:px-6 py-4 border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary to-accent flex items-center justify-center">
-            <Sparkles className="w-5 h-5 text-white" />
+          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+            <Sparkles className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">
+            <h1 className="text-lg font-semibold">
               {practiceContext ? 'Practice Session' : 'AI Learning Coach'}
             </h1>
             <p className="text-sm text-muted-foreground">

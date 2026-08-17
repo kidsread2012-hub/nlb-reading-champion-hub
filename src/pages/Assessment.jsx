@@ -43,12 +43,9 @@ export default function Assessment() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
-      <div className="mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-amber-100 flex items-center justify-center mb-4">
-          <ClipboardCheck className="w-7 h-7 text-amber-600" />
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Assessment Tool</h1>
-        <p className="text-lg text-muted-foreground">
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Assessment Tool</h1>
+        <p className="text-base md:text-lg text-muted-foreground">
           Administer pre and post-tests to assess children's reading proficiency.
         </p>
       </div>
@@ -64,10 +61,10 @@ export default function Assessment() {
       ) : (
         <Button
           size="lg"
-          className="w-full text-lg h-14 mb-8"
+          className="w-full md:w-auto text-base h-12 mb-10"
           onClick={() => setShowRunner(true)}
         >
-          <Plus className="w-5 h-5 mr-2" />
+          <Plus className="w-4 h-4 mr-2" />
           Start New Assessment
         </Button>
       )}

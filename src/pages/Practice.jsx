@@ -26,24 +26,21 @@ export default function Practice() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 pb-24 md:pb-8">
-      <div className="mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-          <Sparkles className="w-7 h-7 text-primary" />
-        </div>
-        <h1 className="text-3xl font-bold mb-2">AI Practice Scenarios</h1>
-        <p className="text-lg text-muted-foreground">
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">AI Practice Scenarios</h1>
+        <p className="text-base md:text-lg text-muted-foreground max-w-2xl">
           Build confidence by practising realistic scenarios with the AI acting as a child
-          participant. Pick a scenario to start a role-play session.
+          participant. Pick a scenario to start.
         </p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         {PRACTICE_SCENARIOS.map((scenario) => {
           const meta = SEGMENT_META[scenario.segment];
           const Icon = meta.icon;
           return (
-            <Card key={scenario.id} className="hover:shadow-md transition-all flex flex-col">
-              <CardContent className="p-5 flex flex-col h-full">
+            <Card key={scenario.id} className="hover:shadow-sm transition-all flex flex-col border-border/60">
+              <CardContent className="p-6 flex flex-col h-full">
                 <div className="flex items-center gap-2 mb-3">
                   <div className={`w-8 h-8 rounded-lg ${meta.iconBg} flex items-center justify-center`}>
                     <Icon className={`w-4 h-4 ${meta.iconColor}`} />

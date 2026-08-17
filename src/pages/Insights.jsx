@@ -84,12 +84,9 @@ export default function Insights() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
-      <div className="mb-8">
-        <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center mb-4">
-          <BarChart3 className="w-7 h-7 text-primary" />
-        </div>
-        <h1 className="text-3xl font-bold mb-2">Insights Dashboard</h1>
-        <p className="text-lg text-muted-foreground">Track assessment scores and reading progress across clubs.</p>
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Insights Dashboard</h1>
+        <p className="text-base md:text-lg text-muted-foreground">Track assessment scores and reading progress across clubs.</p>
       </div>
 
       {/* Filter */}
@@ -123,9 +120,9 @@ export default function Insights() {
           </div>
 
           {/* Level distribution */}
-          <Card className="mb-6">
+          <Card className="mb-8">
             <CardHeader>
-              <CardTitle className="text-xl">Reading Proficiency Distribution</CardTitle>
+              <CardTitle className="text-lg">Reading Proficiency Distribution</CardTitle>
               <CardDescription>Number of children at each proficiency level</CardDescription>
             </CardHeader>
             <CardContent>
@@ -143,7 +140,7 @@ export default function Insights() {
 
           {/* Club comparison */}
           {selectedClub === 'all' && clubData.length > 0 && (
-            <Card className="mb-6">
+            <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="text-xl">Average Score by Club</CardTitle>
                 <CardDescription>Compare performance across all clubs</CardDescription>
@@ -164,7 +161,7 @@ export default function Insights() {
 
           {/* Pre vs Post progress */}
           {progressData.length > 0 && (
-            <Card className="mb-6">
+            <Card className="mb-8">
               <CardHeader>
                 <CardTitle className="text-xl">Pre vs Post-Test Progress</CardTitle>
                 <CardDescription>Children who have completed both tests</CardDescription>

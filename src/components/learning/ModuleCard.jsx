@@ -7,28 +7,28 @@ export default function ModuleCard({ module, progress, onClick }) {
   const isInProgress = progress?.status === 'in_progress';
 
   return (
-    <Card className="hover:shadow-md transition-all cursor-pointer" onClick={onClick}>
-      <CardContent className="p-5 flex items-start gap-4">
-        <div className="shrink-0 mt-1">
+    <Card className="hover:shadow-sm transition-all cursor-pointer border-border/60" onClick={onClick}>
+      <CardContent className="p-5 md:p-6 flex items-start gap-4">
+        <div className="shrink-0 mt-0.5">
           {isCompleted ? (
-            <CheckCircle2 className="w-6 h-6 text-emerald-500" />
+            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
           ) : isInProgress ? (
-            <Circle className="w-6 h-6 text-amber-500 fill-amber-100" />
+            <Circle className="w-5 h-5 text-amber-500 fill-amber-100" />
           ) : (
-            <Circle className="w-6 h-6 text-muted-foreground" />
+            <Circle className="w-5 h-5 text-border" />
           )}
         </div>
         <div className="flex-1 min-w-0">
           {isInProgress && (
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 mb-1 inline-block">
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 mb-1.5 inline-block">
               In Progress
             </span>
           )}
-          <h3 className="text-lg font-semibold mb-1">{module.title}</h3>
-          <p className="text-base text-muted-foreground line-clamp-2">{module.description}</p>
+          <h3 className="text-base font-semibold mb-1">{module.title}</h3>
+          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
           {module.duration_minutes && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground mt-2">
-              <Clock className="w-4 h-4" />
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2.5">
+              <Clock className="w-3.5 h-3.5" />
               {module.duration_minutes} min
             </div>
           )}
