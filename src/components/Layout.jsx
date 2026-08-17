@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Menu, X, Sparkles } from 'lucide-react';
+import AccessibilityControl from '@/components/AccessibilityControl';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -49,7 +50,8 @@ export default function Layout() {
             </NavLink>
           ))}
         </nav>
-        <div className="p-4 border-t border-sidebar-border">
+        <div className="p-4 border-t border-sidebar-border space-y-2">
+          <AccessibilityControl />
           <p className="text-xs text-sidebar-foreground/50 px-4">NLB · kidsREAD Pilot 2.0</p>
         </div>
       </aside>
@@ -89,6 +91,9 @@ export default function Layout() {
                 {item.label}
               </NavLink>
             ))}
+            <div className="pt-2 mt-2 border-t border-sidebar-border">
+              <AccessibilityControl />
+            </div>
           </div>
         </div>
       )}

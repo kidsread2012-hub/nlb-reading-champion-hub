@@ -1,3 +1,5 @@
+@import url('https://fonts.cdnfonts.com/css/opendyslexic');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -86,6 +88,10 @@
   body {
     @apply bg-background text-foreground font-body antialiased;
     line-height: 1.6;
+  }
+
+  .font-dyslexic {
+    --font-body: 'OpenDyslexic', ui-sans-serif, system-ui, sans-serif;
   }
 
   h1, h2, h3, h4, h5, h6 {

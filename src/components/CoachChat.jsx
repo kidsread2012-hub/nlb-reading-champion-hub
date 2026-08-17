@@ -13,6 +13,7 @@ export default function CoachChat() {
   const [assessmentContext, setAssessmentContext] = useState(null);
   const [practiceContext, setPracticeContext] = useState(null);
   const messagesEndRef = useRef(null);
+  const bootstrappedRef = useRef(false);
 
   useEffect(() => {
     if (location.state?.assessmentContext) {
@@ -26,12 +27,24 @@ export default function CoachChat() {
       ]);
     } else if (location.state?.practiceContext) {
       setPracticeContext(location.state.practiceContext);
-      setMessages([
-        {
-          role: 'assistant',
-          content: 'Hi! What are we doing today?',
-        },
-      ]);
+      if (!bootstrappedRef.current) {
+        bootstrappedRef.current = true;
+        setLoading(true);
+        (async () => {
+          try {
+            const response = await base44.functions.invoke('chatWithCoach', {
+              message: "Hi there! I'm here for our reading session today.",
+              conversation_history: [],
+              practice_context: location.state.practiceContext,
+            });
+            setMessages([{ role: 'assistant', content: response.data.response }]);
+          } catch (err) {
+            setMessages([{ role: 'assistant', content: 'Hi! What are we doing today?' }]);
+          } finally {
+            setLoading(false);
+          }
+        })();
+      }
     } else {
       setMessages([
         {
