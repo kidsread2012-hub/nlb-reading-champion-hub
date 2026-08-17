@@ -49,17 +49,18 @@ export function calculateAssessmentResults(answers: Record<string, Record<string
     proficiencyLevel = "Level 3";
   }
 
-  // Identify competencies needing help (sections not passed, up to 3)
+  // Identify competencies needing help — actionable guidance with missed items
+  // Priority: the first sections the child didn't master (where to start), up to 3
   const competenciesNeedingHelp: string[] = [];
   for (const section of LEVEL_SECTIONS) {
     if (!sectionScores[section.id].passed) {
-      competenciesNeedingHelp.push(section.name);
+      competenciesNeedingHelp.push(buildCompetencyGuidance(section, answers));
     }
     if (competenciesNeedingHelp.length >= 3) break;
   }
   // Include tricky words if not passed and there's room
   if (!sectionScores.tricky_words.passed && competenciesNeedingHelp.length < 3) {
-    competenciesNeedingHelp.push("Tricky Words");
+    competenciesNeedingHelp.push(buildCompetencyGuidance(ASSESSMENT_SECTIONS[8], answers));
   }
 
   return {
@@ -69,4 +70,27 @@ export function calculateAssessmentResults(answers: Record<string, Record<string
     proficiencyLevel,
     competenciesNeedingHelp,
   };
+}
+
+function buildCompetencyGuidance(
+  section: { id: string; name: string; items: string[] },
+  answers: Record<string, Record<string, boolean>>
+): string {
+  const sectionAnswers = answers[section.id] || {};
+  const missed = section.items.filter(item => sectionAnswers[item] !== true);
+  const missedList = missed.join(", ");
+  const isLetters = section.id.includes("_letters");
+  const isBlending = section.id.includes("_blending");
+  const isTricky = section.id === "tricky_words";
+
+  if (isLetters) {
+    return `${section.name} — the child doesn't yet know the sounds for: ${missedList}. Start with flashcard drills for these letter sounds before moving to blending.`;
+  }
+  if (isBlending) {
+    return `${section.name} — the child can't yet blend: ${missedList}. Practice sounding out each word slowly (/c/ /a/ /t/), then push the sounds together to read the whole word.`;
+  }
+  if (isTricky) {
+    return `${section.name} — the child doesn't yet recognise: ${missedList}. These are sight words that can't be sounded out. Practice with look-cover-write-check and word games.`;
+  }
+  return `${section.name} — missed: ${missedList}.`;
 }

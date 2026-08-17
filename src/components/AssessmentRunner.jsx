@@ -319,14 +319,21 @@ function AssessmentResult({ result, metadata, navigate }) {
             <CardDescription>Focus your coaching on these competencies:</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {result.competencies_needing_help.map((comp, i) => (
-              <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-accent/10">
-                <span className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm shrink-0">
-                  {i + 1}
-                </span>
-                <span className="text-lg font-medium">{comp}</span>
-              </div>
-            ))}
+            {result.competencies_needing_help.map((comp, i) => {
+              const [sectionName, ...rest] = comp.split(' — ');
+              const guidance = rest.join(' — ');
+              return (
+                <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-accent/10">
+                  <span className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center font-bold text-sm shrink-0 mt-0.5">
+                    {i + 1}
+                  </span>
+                  <div>
+                    <p className="text-base font-semibold mb-0.5">{sectionName}</p>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{guidance}</p>
+                  </div>
+                </div>
+              );
+            })}
           </CardContent>
         </Card>
       )}
