@@ -1,0 +1,35 @@
+{
+  "name": "CoachKnowledge",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title"
+    },
+    "source": {
+      "type": "string",
+      "title": "Source"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "About kidsREAD",
+        "Volunteer Handbook",
+        "Storytelling",
+        "Phonics",
+        "Resources",
+        "Escalation"
+      ],
+      "title": "Category"
+    },
+    "content": {
+      "type": "string",
+      "title": "Content"
+    }
+  },
+  "required": [
+    "title",
+    "category",
+    "content"
+  ]
+}

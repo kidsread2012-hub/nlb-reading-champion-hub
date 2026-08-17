@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Clock, CheckCircle2, Sparkles, LayoutGrid, Sun, Moon } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle2, Sparkles, Sun, Moon } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import CheckpointCard from './CheckpointCard';
 import VideoCard from './VideoCard';
@@ -115,9 +115,9 @@ export default function ModuleReader({
     navigate('/coach', {
       state: {
         practiceContext: {
+          mode: 'guided_roleplay',
           title: module.title,
           scenario_prompt: module.practice_prompt,
-          child_age: '5',
         },
       },
     });
@@ -262,21 +262,10 @@ export default function ModuleReader({
                 </p>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <Button size="lg" className="flex-1 h-11" onClick={handlePractice}>
-                <Sparkles className="w-4 h-4 mr-2" />
-                {saved.practiceLaunched ? 'Practise again' : 'Practise this scenario'}
-              </Button>
-              <Button
-                variant="outline"
-                size="lg"
-                className="flex-1 h-11"
-                onClick={() => navigate('/practice')}
-              >
-                <LayoutGrid className="w-4 h-4 mr-2" />
-                Browse all scenarios
-              </Button>
-            </div>
+            <Button size="lg" className="w-full h-11" onClick={handlePractice}>
+              <Sparkles className="w-4 h-4 mr-2" />
+              {saved.practiceLaunched ? 'Practise again' : 'Practise this scenario'}
+            </Button>
           </div>
 
           {/* Completion / hint */}

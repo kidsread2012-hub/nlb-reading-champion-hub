@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Menu, X, Sparkles } from 'lucide-react';
+import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Menu, X } from 'lucide-react';
 import AccessibilityControl from '@/components/AccessibilityControl';
 
 const NAV_ITEMS = [
@@ -8,7 +8,6 @@ const NAV_ITEMS = [
   { to: '/learning', label: 'Learning', icon: BookOpen },
   { to: '/assessment', label: 'Assessment', icon: ClipboardCheck },
   { to: '/coach', label: 'AI Coach', icon: MessageCircle },
-  { to: '/practice', label: 'Practice', icon: Sparkles },
   { to: '/insights', label: 'Insights', icon: BarChart3 },
 ];
 
