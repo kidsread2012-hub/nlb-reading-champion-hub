@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, CheckCircle2, Sparkles, LayoutGrid } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import CheckpointCard from './CheckpointCard';
+import VideoCard from './VideoCard';
 
 const STORAGE_PREFIX = 'nlb_module_progress_';
 
@@ -38,7 +39,44 @@ export default function ModuleReader({ module, onComplete, onBack }) {
   const [saved, setSaved] = useState(() => loadProgress(module.id));
   const completedRef = useRef(false);
 
-  const parts = module.content.split(/\{\{CHECKPOINT\}\}/);
+  const tokens = React.useMemo(() => {
+    const result = [];
+    const regex = /\{\{CHECKPOINT\}\}|\{\{VIDEO:([^}]*)\}\}/g;
+    let lastIndex = 0;
+    let checkpointIndex = 0;
+    let match;
+    while ((match = regex.exec(module.content)) !== null) {
+      if (match.index > lastIndex) {
+        result.push({ type: 'text', content: module.content.slice(lastIndex, match.index) });
+      }
+      if (match[0] === '{{CHECKPOINT}}') {
+        if (checkpoints[checkpointIndex]) {
+          result.push({
+            type: 'checkpoint',
+            index: checkpointIndex,
+            checkpoint: checkpoints[checkpointIndex],
+          });
+        }
+        checkpointIndex++;
+      } else {
+        const p = match[1].split('|').map((s) => (s || '').trim());
+        result.push({
+          type: 'video',
+          videoId: p[0] || '',
+          title: p[1] || 'Instructional video',
+          description: p[2] || '',
+          start: p[3] || '',
+          end: p[4] || '',
+        });
+      }
+      lastIndex = regex.lastIndex;
+    }
+    if (lastIndex < module.content.length) {
+      result.push({ type: 'text', content: module.content.slice(lastIndex) });
+    }
+    return result;
+  }, [module]);
+
   const answeredCount = Object.keys(saved.answered).length;
   const totalSteps = checkpoints.length + 1; // +1 for practice
   const doneSteps = answeredCount + (saved.practiceLaunched ? 1 : 0);
@@ -128,19 +166,33 @@ export default function ModuleReader({ module, onComplete, onBack }) {
       )}
 
       <div className="prose prose-lg max-w-none mb-8">
-        {parts.map((part, i) => (
-          <div key={i}>
-            <ReactMarkdown>{part}</ReactMarkdown>
-            {checkpoints[i] && (
+        {tokens.map((tok, i) => {
+          if (tok.type === 'text') {
+            return <ReactMarkdown key={i}>{tok.content}</ReactMarkdown>;
+          }
+          if (tok.type === 'checkpoint') {
+            const ci = tok.index;
+            return (
               <CheckpointCard
-                checkpoint={checkpoints[i]}
-                index={i + 1}
-                initialSelected={saved.answered[i] !== undefined ? saved.answered[i] : null}
+                key={i}
+                checkpoint={tok.checkpoint}
+                index={ci + 1}
+                initialSelected={saved.answered[ci] !== undefined ? saved.answered[ci] : null}
                 onAnswered={handleAnswered}
               />
-            )}
-          </div>
-        ))}
+            );
+          }
+          return (
+            <VideoCard
+              key={i}
+              videoId={tok.videoId}
+              title={tok.title}
+              description={tok.description}
+              start={tok.start}
+              end={tok.end}
+            />
+          );
+        })}
       </div>
 
       {/* Practice CTA */}
