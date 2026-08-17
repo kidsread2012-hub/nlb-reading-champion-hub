@@ -12,6 +12,7 @@ import Learning from '@/pages/Learning';
 import Assessment from '@/pages/Assessment';
 import Coach from '@/pages/Coach';
 import Insights from '@/pages/Insights';
+import Practice from '@/pages/Practice';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -46,6 +47,7 @@ const AuthenticatedApp = () => {
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/coach" element={<Coach />} />
         <Route path="/insights" element={<Insights />} />
+        <Route path="/practice" element={<Practice />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

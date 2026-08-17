@@ -14,6 +14,14 @@
       "type": "string",
       "title": "Content (Markdown)"
     },
+    "segment": {
+      "type": "string",
+      "enum": [
+        "power_up",
+        "storytelling"
+      ],
+      "title": "Segment"
+    },
     "category": {
       "type": "string",
       "enum": [
@@ -31,13 +39,38 @@
     "duration_minutes": {
       "type": "number",
       "title": "Duration (Minutes)"
+    },
+    "checkpoints": {
+      "type": "array",
+      "title": "Check-in Points",
+      "items": {
+        "type": "object",
+        "properties": {
+          "prompt": {
+            "type": "string",
+            "title": "Scenario Prompt"
+          },
+          "model_answer": {
+            "type": "string",
+            "title": "Recommended Approach"
+          }
+        },
+        "required": [
+          "prompt",
+          "model_answer"
+        ]
+      }
+    },
+    "practice_prompt": {
+      "type": "string",
+      "title": "AI Practice Prompt"
     }
   },
   "required": [
     "title",
     "description",
     "content",
-    "category",
+    "segment",
     "order"
   ]
 }

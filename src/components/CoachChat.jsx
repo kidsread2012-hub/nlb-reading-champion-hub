@@ -11,6 +11,7 @@ export default function CoachChat() {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [assessmentContext, setAssessmentContext] = useState(null);
+  const [practiceContext, setPracticeContext] = useState(null);
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -21,6 +22,14 @@ export default function CoachChat() {
         {
           role: 'assistant',
           content: `Hello! I see you've just completed a ${ctx.test_type === 'pre' ? 'pre' : 'post'}-test assessment for ${ctx.child_name} from ${ctx.club_name}. The child scored ${ctx.total_score}/${ctx.total_possible} and is at ${ctx.proficiency_level}. The areas needing support are: ${ctx.competencies_needing_help?.join(', ') || 'none'}.\n\nI'm here to help you with personalised coaching strategies. What would you like to work on with ${ctx.child_name}?`,
+        },
+      ]);
+    } else if (location.state?.practiceContext) {
+      setPracticeContext(location.state.practiceContext);
+      setMessages([
+        {
+          role: 'assistant',
+          content: 'Hi! What are we doing today?',
         },
       ]);
     } else {
@@ -48,6 +57,7 @@ export default function CoachChat() {
         message: userMessage.content,
         conversation_history: messages,
         assessment_context: assessmentContext,
+        practice_context: practiceContext,
       });
       setMessages((prev) => [...prev, { role: 'assistant', content: response.data.response }]);
     } catch (err) {
@@ -76,9 +86,13 @@ export default function CoachChat() {
             <Sparkles className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="text-xl font-bold">AI Learning Coach</h1>
+            <h1 className="text-xl font-bold">
+              {practiceContext ? 'Practice Session' : 'AI Learning Coach'}
+            </h1>
             <p className="text-sm text-muted-foreground">
-              {assessmentContext
+              {practiceContext
+                ? `Role-play: ${practiceContext.title || 'Scenario'}`
+                : assessmentContext
                 ? `Coaching for ${assessmentContext.child_name}`
                 : 'Personalised guidance for reading champions'}
             </p>
@@ -118,7 +132,11 @@ export default function CoachChat() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="Ask for coaching strategies, activities, or guidance..."
+            placeholder={
+              practiceContext
+                ? 'Speak to the child...'
+                : 'Ask for coaching strategies, activities, or guidance...'
+            }
             rows={1}
             className="flex-1 resize-none rounded-xl border border-input bg-background px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-ring min-h-[52px] max-h-32"
             disabled={loading}
