@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Play, X, Video } from 'lucide-react';
+import { Play, X, Video, ExternalLink } from 'lucide-react';
 
 export default function VideoCard({ videoId, title, description, start, end }) {
   const [open, setOpen] = useState(false);
@@ -19,11 +19,15 @@ export default function VideoCard({ videoId, title, description, start, end }) {
   }, [open]);
 
   let embedSrc = '';
+  let watchUrl = '';
   if (hasVideo) {
     const params = new URLSearchParams({ rel: '0' });
     if (start) params.set('start', String(start));
     if (end) params.set('end', String(end));
     embedSrc = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+    const watchParams = new URLSearchParams();
+    if (start) watchParams.set('t', `${start}s`);
+    watchUrl = `https://www.youtube.com/watch?v=${videoId}&${watchParams.toString()}`;
   }
 
   return (
@@ -81,6 +85,15 @@ export default function VideoCard({ videoId, title, description, start, end }) {
                 allowFullScreen
               />
             </div>
+            <a
+              href={watchUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-3 inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white underline underline-offset-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Open on YouTube
+            </a>
           </div>
         </div>
       )}
