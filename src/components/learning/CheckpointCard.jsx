@@ -75,16 +75,16 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
   };
 
   return (
-    <div className="my-6 rounded-2xl border-2 border-amber-200 bg-amber-50/60 p-5 md:p-6 not-prose">
+    <div className="my-7 rounded-2xl bg-muted/40 border border-border/60 p-5 md:p-6 not-prose">
       <div className="flex items-start gap-3 mb-3">
-        <div className="w-9 h-9 rounded-xl bg-amber-400 text-white flex items-center justify-center shrink-0">
+        <div className="w-9 h-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
           <HelpCircle className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs font-semibold text-amber-700 uppercase tracking-wide">
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
             Check-in {index}
           </p>
-          <p className="text-lg font-semibold text-foreground mt-0.5">What would you do?</p>
+          <p className="text-base font-semibold text-foreground mt-0.5">What would you do?</p>
         </div>
       </div>
       <p className="text-base text-foreground leading-relaxed mb-4 pl-12">
@@ -102,8 +102,8 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
       {/* Error fallback: show the recommended answer directly */}
       {error && !loading && (
         <div className="pl-12 space-y-3">
-          <div className="p-4 rounded-xl bg-white border border-amber-200">
-            <p className="text-sm font-semibold text-amber-700 mb-1.5 flex items-center gap-1.5">
+          <div className="p-4 rounded-xl bg-card border border-border/60">
+            <p className="text-sm font-semibold text-primary mb-1.5 flex items-center gap-1.5">
               <Lightbulb className="w-4 h-4" /> Recommended approach
             </p>
             <p className="text-base text-foreground leading-relaxed">{checkpoint.model_answer}</p>
@@ -125,14 +125,14 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
             const isRecommended = opt.is_recommended;
             const showResult = selected !== null;
 
-            let cls = 'border-2 border-amber-200 bg-white hover:border-amber-400 hover:bg-amber-50/50';
+            let cls = 'border border-border bg-card hover:border-primary/40 hover:bg-primary/5';
             if (showResult) {
               if (isRecommended) {
-                cls = 'border-2 border-green-500 bg-green-50';
+                cls = 'border border-emerald-500 bg-emerald-50';
               } else if (isSelected) {
-                cls = 'border-2 border-red-400 bg-red-50';
+                cls = 'border border-red-400 bg-red-50';
               } else {
-                cls = 'border-2 border-amber-200 bg-white opacity-60';
+                cls = 'border border-border bg-card opacity-60';
               }
             }
 
@@ -147,7 +147,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
                   {showResult && isRecommended && <CheckCircle2 className="w-5 h-5 text-green-600" />}
                   {showResult && !isRecommended && isSelected && <XCircle className="w-5 h-5 text-red-500" />}
                   {!showResult && (
-                    <div className="w-5 h-5 rounded-full border-2 border-amber-300" />
+                    <div className="w-5 h-5 rounded-full border-2 border-muted-foreground/30" />
                   )}
                 </div>
                 <span className="text-base text-foreground leading-relaxed">{opt.text}</span>
@@ -159,8 +159,8 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
 
       {/* Explanation reveal after selection */}
       {selected !== null && options && !error && (
-        <div className="mt-4 ml-12 p-4 rounded-xl bg-white border border-amber-200">
-          <p className="text-sm font-semibold text-amber-700 mb-1.5 flex items-center gap-1.5">
+        <div className="mt-4 ml-12 p-4 rounded-xl bg-card border border-border/60">
+          <p className="text-sm font-semibold text-primary mb-1.5 flex items-center gap-1.5">
             <Lightbulb className="w-4 h-4" /> Why this approach?
           </p>
           <p className="text-base text-foreground leading-relaxed">{explanation}</p>

@@ -8,6 +8,17 @@
     <title>Base44 APP</title>
   </head>
   <body>
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem('nlb_accessibility_prefs');
+          if (raw) {
+            var p = JSON.parse(raw);
+            if (p && p.theme === 'dark') document.documentElement.classList.add('dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

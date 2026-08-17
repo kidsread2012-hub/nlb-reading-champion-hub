@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Accessibility, Check } from 'lucide-react';
+import { Accessibility, Sun, Moon } from 'lucide-react';
 import { useAccessibility } from '@/hooks/useAccessibility';
 
 export default function AccessibilityControl() {
-  const { prefs, toggleFont, setSize, sizeLabels, sizeTitles } = useAccessibility();
+  const { prefs, toggleFont, setSize, toggleTheme, sizeLabels, sizeTitles } = useAccessibility();
   const [open, setOpen] = useState(false);
   const sizes = Object.keys(sizeLabels);
 
@@ -42,6 +42,32 @@ export default function AccessibilityControl() {
                 }`}
               >
                 Dyslexic
+              </button>
+            </div>
+          </div>
+          {/* Theme toggle */}
+          <div>
+            <p className="text-xs text-sidebar-foreground/60 mb-1.5 font-medium">Theme</p>
+            <div className="grid grid-cols-2 gap-1.5">
+              <button
+                onClick={() => prefs.theme !== 'light' && toggleTheme()}
+                className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  prefs.theme !== 'dark'
+                    ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                    : 'bg-sidebar-background/40 text-sidebar-foreground/70 hover:text-sidebar-foreground'
+                }`}
+              >
+                <Sun className="w-3.5 h-3.5" /> Light
+              </button>
+              <button
+                onClick={() => prefs.theme !== 'dark' && toggleTheme()}
+                className={`flex items-center justify-center gap-1.5 px-2 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                  prefs.theme === 'dark'
+                    ? 'bg-sidebar-primary text-sidebar-primary-foreground'
+                    : 'bg-sidebar-background/40 text-sidebar-foreground/70 hover:text-sidebar-foreground'
+                }`}
+              >
+                <Moon className="w-3.5 h-3.5" /> Dark
               </button>
             </div>
           </div>

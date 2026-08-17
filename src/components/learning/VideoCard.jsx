@@ -36,9 +36,9 @@ export default function VideoCard({ videoId, title, description, start, end }) {
         type="button"
         onClick={() => hasVideo && setOpen(true)}
         disabled={!hasVideo}
-        className="my-5 w-full flex items-center gap-4 p-4 rounded-2xl border-2 border-primary/20 bg-primary/5 text-left transition-colors hover:border-primary/40 hover:bg-primary/10 disabled:opacity-70 disabled:cursor-default not-prose"
+        className="my-5 w-full flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-muted/30 text-left transition-colors hover:border-primary/40 hover:bg-primary/5 disabled:opacity-70 disabled:cursor-default not-prose"
       >
-        <div className="shrink-0 w-14 h-14 rounded-xl bg-primary/15 flex items-center justify-center">
+        <div className="shrink-0 w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
           {hasVideo ? (
             <Play className="w-6 h-6 text-primary" />
           ) : (

@@ -6,7 +6,7 @@ const SIZE_STEPS = { sm: 16, md: 18, lg: 20, xl: 24 };
 const SIZE_LABELS = { sm: 'S', md: 'M', lg: 'L', xl: 'XL' };
 const SIZE_TITLES = { sm: 'Small', md: 'Medium', lg: 'Large', xl: 'Extra Large' };
 
-const DEFAULT_PREFS = { font: 'default', size: 'md' };
+const DEFAULT_PREFS = { font: 'default', size: 'md', theme: 'light' };
 
 function loadPrefs() {
   try {
@@ -21,6 +21,7 @@ function loadPrefs() {
 function applyPrefs(prefs) {
   const root = document.documentElement;
   root.classList.toggle('font-dyslexic', prefs.font === 'dyslexic');
+  root.classList.toggle('dark', prefs.theme === 'dark');
   root.style.fontSize = `${SIZE_STEPS[prefs.size] || 18}px`;
 }
 
@@ -52,5 +53,9 @@ export function useAccessibility() {
     update({ size });
   }, [update]);
 
-  return { prefs, toggleFont, setSize, sizeLabels: SIZE_LABELS, sizeTitles: SIZE_TITLES };
+  const toggleTheme = useCallback(() => {
+    update({ theme: prefs.theme === 'dark' ? 'light' : 'dark' });
+  }, [prefs.theme, update]);
+
+  return { prefs, toggleFont, setSize, toggleTheme, sizeLabels: SIZE_LABELS, sizeTitles: SIZE_TITLES };
 }

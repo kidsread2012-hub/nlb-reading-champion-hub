@@ -67,6 +67,22 @@ export default function Learning() {
     }
   };
 
+  const handleSwitchModule = (mod) => {
+    setActiveModule(mod);
+    if (!progress[mod.id]) {
+      try {
+        const created = base44.entities.LearningProgress.create({
+          module_id: mod.id,
+          module_title: mod.title,
+          status: 'in_progress',
+        });
+        setProgress((prev) => ({ ...prev, [mod.id]: created }));
+      } catch (err) {
+        // ignore
+      }
+    }
+  };
+
   const handleCompleteModule = async (mod) => {
     try {
       const existing = progress[mod.id];
@@ -90,11 +106,15 @@ export default function Learning() {
   }
 
   if (activeModule) {
+    const trackModules = modules.filter((m) => m.segment === activeModule.segment);
     return (
       <ModuleReader
         module={activeModule}
         onComplete={handleCompleteModule}
         onBack={() => setActiveModule(null)}
+        trackModules={trackModules}
+        progress={progress}
+        onSwitchModule={handleSwitchModule}
       />
     );
   }
