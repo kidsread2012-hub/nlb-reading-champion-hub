@@ -68,7 +68,15 @@ export default function AssessmentRunner({ clubs }) {
         club_name: metadata.club_name,
         answers,
       });
-      setResult(response.data);
+      // Backend returns camelCase fields; normalize to snake_case for the results view
+      const data = response.data || response;
+      setResult({
+        ...data,
+        total_score: data.totalScore ?? data.total_score,
+        total_possible: data.totalPossible ?? data.total_possible,
+        proficiency_level: data.proficiencyLevel ?? data.proficiency_level,
+        competencies_needing_help: data.competenciesNeedingHelp ?? data.competencies_needing_help,
+      });
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
