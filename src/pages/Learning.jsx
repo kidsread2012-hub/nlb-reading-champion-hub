@@ -69,17 +69,16 @@ export default function Learning() {
 
   const handleCompleteModule = async (mod) => {
     try {
-      if (progress[mod.id]) {
-        const updated = await base44.entities.LearningProgress.update(progress[mod.id].id, {
-          status: 'completed',
-          completed_date: new Date().toISOString().split('T')[0],
-        });
-        setProgress((prev) => ({ ...prev, [mod.id]: updated }));
-      }
+      const existing = progress[mod.id];
+      if (!existing || existing.status === 'completed') return; // idempotent
+      const updated = await base44.entities.LearningProgress.update(existing.id, {
+        status: 'completed',
+        completed_date: new Date().toISOString().split('T')[0],
+      });
+      setProgress((prev) => ({ ...prev, [mod.id]: updated }));
     } catch (err) {
       // ignore
     }
-    setActiveModule(null);
   };
 
   if (loading) {

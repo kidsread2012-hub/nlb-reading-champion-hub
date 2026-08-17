@@ -5,11 +5,11 @@ import { base44 } from '@/api/base44Client';
 // Module-level cache keyed by checkpoint prompt — avoids re-calling the LLM
 const cache = new Map();
 
-export default function CheckpointCard({ checkpoint, index = 1 }) {
+export default function CheckpointCard({ checkpoint, index = 1, initialSelected = null, onAnswered }) {
   const [options, setOptions] = useState(null);
   const [explanation, setExplanation] = useState('');
   const [loading, setLoading] = useState(!cache.has(checkpoint.prompt));
-  const [selected, setSelected] = useState(null);
+  const [selected, setSelected] = useState(initialSelected);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -49,6 +49,7 @@ export default function CheckpointCard({ checkpoint, index = 1 }) {
   const handleSelect = (i) => {
     if (selected !== null) return;
     setSelected(i);
+    if (onAnswered) onAnswered(index - 1, i);
   };
 
   const handleRetry = () => {
