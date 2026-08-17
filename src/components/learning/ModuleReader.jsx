@@ -50,10 +50,10 @@ export default function ModuleReader({ module, onComplete, onBack }) {
 
       <div className="prose prose-lg max-w-none mb-8">
         {parts.map((part, i) => (
-          <React.Fragment key={i}>
+          <div key={i}>
             <ReactMarkdown>{part}</ReactMarkdown>
             {checkpoints[i] && <CheckpointCard checkpoint={checkpoints[i]} index={i + 1} />}
-          </React.Fragment>
+          </div>
         ))}
       </div>
 
