@@ -1,0 +1,75 @@
+{
+  "name": "Assessment",
+  "type": "object",
+  "properties": {
+    "test_type": {
+      "type": "string",
+      "enum": [
+        "pre",
+        "post"
+      ],
+      "title": "Test Type"
+    },
+    "assessment_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Assessment Date"
+    },
+    "volunteer_name": {
+      "type": "string",
+      "title": "Volunteer Name"
+    },
+    "volunteer_email": {
+      "type": "string",
+      "title": "Volunteer Email"
+    },
+    "child_name": {
+      "type": "string",
+      "title": "Child Name"
+    },
+    "club_name": {
+      "type": "string",
+      "title": "Club Name"
+    },
+    "answers": {
+      "type": "object",
+      "title": "Raw Answers"
+    },
+    "section_scores": {
+      "type": "object",
+      "title": "Section Scores"
+    },
+    "total_score": {
+      "type": "number",
+      "title": "Total Score"
+    },
+    "total_possible": {
+      "type": "number",
+      "title": "Total Possible"
+    },
+    "proficiency_level": {
+      "type": "string",
+      "title": "Proficiency Level"
+    },
+    "competencies_needing_help": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "title": "Competencies Needing Help"
+    }
+  },
+  "required": [
+    "test_type",
+    "assessment_date",
+    "volunteer_name",
+    "child_name",
+    "club_name",
+    "answers",
+    "section_scores",
+    "total_score",
+    "total_possible",
+    "proficiency_level",
+    "competencies_needing_help"
+  ]
+}

@@ -1,0 +1,43 @@
+{
+  "name": "LearningModule",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string",
+      "title": "Title"
+    },
+    "description": {
+      "type": "string",
+      "title": "Description"
+    },
+    "content": {
+      "type": "string",
+      "title": "Content (Markdown)"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Phonics",
+        "Reading Strategies",
+        "Volunteer Skills",
+        "Assessment Guide"
+      ],
+      "title": "Category"
+    },
+    "order": {
+      "type": "number",
+      "title": "Order"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "title": "Duration (Minutes)"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "content",
+    "category",
+    "order"
+  ]
+}

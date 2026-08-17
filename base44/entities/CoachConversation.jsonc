@@ -1,0 +1,26 @@
+{
+  "name": "CoachConversation",
+  "type": "object",
+  "properties": {
+    "role": {
+      "type": "string",
+      "enum": [
+        "user",
+        "assistant"
+      ],
+      "title": "Role"
+    },
+    "content": {
+      "type": "string",
+      "title": "Content"
+    },
+    "assessment_context": {
+      "type": "object",
+      "title": "Assessment Context"
+    }
+  },
+  "required": [
+    "role",
+    "content"
+  ]
+}

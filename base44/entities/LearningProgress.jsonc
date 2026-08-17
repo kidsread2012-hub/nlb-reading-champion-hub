@@ -1,0 +1,38 @@
+{
+  "name": "LearningProgress",
+  "type": "object",
+  "properties": {
+    "module_id": {
+      "type": "string",
+      "title": "Module ID"
+    },
+    "module_title": {
+      "type": "string",
+      "title": "Module Title"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "not_started",
+        "in_progress",
+        "completed"
+      ],
+      "default": "not_started",
+      "title": "Status"
+    },
+    "completed_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Completed Date"
+    },
+    "notes": {
+      "type": "string",
+      "title": "Notes"
+    }
+  },
+  "required": [
+    "module_id",
+    "module_title",
+    "status"
+  ]
+}
