@@ -4,7 +4,6 @@ import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, Mic } from 'lucide-react';
 import SegmentSection from '@/components/learning/SegmentSection';
 import ModuleReader from '@/components/learning/ModuleReader';
-import ResourcesSection from '@/components/learning/ResourcesSection';
 
 const SEGMENTS = [
   {
@@ -161,8 +160,6 @@ export default function Learning() {
           {modules.length} modules across two segments · {completedCount} completed so far.
         </p>
       </div>
-
-      <ResourcesSection />
 
       {grouped.map((seg) => (
         <SegmentSection

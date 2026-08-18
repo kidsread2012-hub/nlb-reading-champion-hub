@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import { BookOpen, Play, ExternalLink, ChevronDown, X } from 'lucide-react';
-import { RESOURCES } from '@/lib/resources';
+import { Play, ExternalLink, X } from 'lucide-react';
 
-function VideoResource({ item }) {
+export function ResourceVideoCard({ item }) {
   const [open, setOpen] = useState(false);
   const embedSrc = `https://www.youtube.com/embed/${item.videoId}?rel=0`;
   const watchUrl = `https://www.youtube.com/watch?v=${item.videoId}`;
@@ -12,7 +11,7 @@ function VideoResource({ item }) {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="w-full flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-muted/30 text-left transition-colors hover:border-primary/40 hover:bg-primary/5"
+        className="w-full flex items-center gap-4 p-4 rounded-2xl border border-border/60 bg-card text-left transition-colors hover:border-primary/40 hover:bg-primary/5"
       >
         <div className="shrink-0 w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center">
           <Play className="w-6 h-6 text-primary" />
@@ -71,7 +70,7 @@ function VideoResource({ item }) {
   );
 }
 
-function LinkResource({ item }) {
+export function ResourceLinkCard({ item }) {
   return (
     <a
       href={item.url}
@@ -89,62 +88,5 @@ function LinkResource({ item }) {
         )}
       </div>
     </a>
-  );
-}
-
-export default function ResourcesSection() {
-  const [expanded, setExpanded] = useState(false);
-
-  return (
-    <div className="mb-10">
-      <button
-        type="button"
-        onClick={() => setExpanded((v) => !v)}
-        className="w-full flex items-center justify-between mb-1 group"
-      >
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-primary" />
-          </div>
-          <div className="text-left">
-            <h2 className="text-xl font-bold tracking-tight">Resources</h2>
-            <p className="text-sm text-muted-foreground">
-              Reference videos and links to support your sessions
-            </p>
-          </div>
-        </div>
-        <ChevronDown
-          className={`w-5 h-5 text-muted-foreground transition-transform duration-200 ${
-            expanded ? 'rotate-180' : ''
-          }`}
-        />
-      </button>
-
-      {expanded && (
-        <div className="mt-5 space-y-6">
-          {RESOURCES.map((group) => (
-            <div key={group.topic}>
-              <div className="flex items-center gap-3 mb-3">
-                <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                  {group.topic}
-                </h3>
-                <div className="flex-1 h-px bg-border/60" />
-              </div>
-              <div className="grid gap-3 sm:grid-cols-2">
-                {group.items.map((item, i) =>
-                  item.type === 'video' ? (
-                    <div key={i} className="sm:col-span-2">
-                      <VideoResource item={item} />
-                    </div>
-                  ) : (
-                    <LinkResource key={i} item={item} />
-                  )
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
   );
 }

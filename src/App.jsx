@@ -9,6 +9,7 @@ import ScrollToTop from './components/ScrollToTop';
 import Layout from '@/components/Layout';
 import Dashboard from '@/pages/Dashboard';
 import Learning from '@/pages/Learning';
+import Resources from '@/pages/Resources';
 import Assessment from '@/pages/Assessment';
 import Coach from '@/pages/Coach';
 import Insights from '@/pages/Insights';
@@ -44,6 +45,7 @@ const AuthenticatedApp = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
         <Route path="/learning" element={<Learning />} />
+        <Route path="/resources" element={<Resources />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/coach" element={<Coach />} />
         <Route element={<AdminRoute />}>

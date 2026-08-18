@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Menu, X } from 'lucide-react';
+import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Library, Menu, X } from 'lucide-react';
 import AccessibilityControl from '@/components/AccessibilityControl';
 import { useAuth } from '@/lib/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
   { to: '/learning', label: 'Learning', icon: BookOpen },
+  { to: '/resources', label: 'Resources', icon: Library },
   { to: '/assessment', label: 'Assessment', icon: ClipboardCheck },
   { to: '/coach', label: 'AI Coach', icon: MessageCircle },
   { to: '/insights', label: 'Insights', icon: BarChart3 },
