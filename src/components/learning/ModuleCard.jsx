@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Clock, CheckCircle2, Circle } from 'lucide-react';
 
-export default function ModuleCard({ module, progress, onClick }) {
+export default function ModuleCard({ module, progress, onClick, leftEdge, accentBg }) {
   const isCompleted = progress?.status === 'completed';
   const isInProgress = progress?.status === 'in_progress';
 
@@ -26,15 +26,17 @@ export default function ModuleCard({ module, progress, onClick }) {
   }
 
   return (
-    <Card className="hover:shadow-sm transition-all cursor-pointer border-border/60" onClick={onClick}>
+    <Card className={`hover:shadow-md transition-all cursor-pointer border-border/60 bg-white shadow-sm ${leftEdge || ''}`} onClick={onClick}>
       <CardContent className="p-5 md:p-6 flex items-start gap-4">
         <div className="shrink-0 mt-0.5">
           {isCompleted ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-500" />
+            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${accentBg || 'bg-emerald-500'}`}>
+              <CheckCircle2 className="w-4 h-4 text-white" />
+            </div>
           ) : isInProgress ? (
-            <Circle className="w-5 h-5 text-amber-500 fill-amber-100" />
+            <Circle className="w-6 h-6 text-amber-500 fill-amber-100" />
           ) : (
-            <Circle className="w-5 h-5 text-border" />
+            <Circle className="w-6 h-6 text-border" />
           )}
         </div>
         <div className="flex-1 min-w-0">

@@ -27,7 +27,7 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
   ).length;
 
   return (
-    <section className={`mb-10 rounded-3xl border ${segment.panelBorder} ${segment.panelBg} overflow-hidden`}>
+    <section className={`mb-10 rounded-3xl border ${segment.panelBorder} ${segment.panelBg} overflow-hidden shadow-sm`}>
       {/* Accent band header */}
       <header className={`px-5 md:px-7 py-5 ${segment.bandBg} flex items-center gap-3`}>
         <div className={`w-11 h-11 rounded-2xl flex items-center justify-center ${segment.iconBg} shadow-sm`}>
@@ -52,16 +52,18 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
                 key={mod.id}
                 module={mod}
                 progress={progress[mod.id]}
+                leftEdge={segment.leftEdge}
+                accentBg={segment.iconBg}
                 onClick={() => onStart(mod)}
               />
             ))}
             {letterSoundModules.length > 0 && (
-              <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4">
+              <div className={`rounded-2xl border ${segment.panelBorder} bg-white p-4 shadow-sm`}>
                 <div className="flex items-center gap-2 mb-3 px-1">
-                  <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
-                    <Type className="w-4 h-4 text-primary" />
+                  <div className={`w-7 h-7 rounded-lg ${segment.iconChipBg} flex items-center justify-center`}>
+                    <Type className={`w-4 h-4 ${segment.iconChipColor}`} />
                   </div>
-                  <h3 className="text-base font-semibold text-primary">Letter Sounds</h3>
+                  <h3 className={`text-base font-semibold ${segment.titleColor}`}>Letter Sounds</h3>
                   <span className="text-sm text-muted-foreground">
                     · {lsCompleted}/{letterSoundModules.length} completed
                   </span>
@@ -72,6 +74,8 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
                       key={mod.id}
                       module={mod}
                       progress={progress[mod.id]}
+                      leftEdge={segment.leftEdge}
+                      accentBg={segment.iconBg}
                       onClick={() => onStart(mod)}
                     />
                   ))}
@@ -83,6 +87,8 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
                 key={mod.id}
                 module={mod}
                 progress={progress[mod.id]}
+                leftEdge={segment.leftEdge}
+                accentBg={segment.iconBg}
                 onClick={() => onStart(mod)}
               />
             ))}

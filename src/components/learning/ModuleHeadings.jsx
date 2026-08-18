@@ -39,7 +39,7 @@ export function H2Renderer({ children }) {
       </h2>
     );
   }
-  return <h2>{children}</h2>;
+  return <h2 className="text-xl font-semibold mt-7 mb-3 text-foreground">{children}</h2>;
 }
 
 export function H3Renderer({ children }) {
@@ -58,5 +58,5 @@ export function H3Renderer({ children }) {
       </h3>
     );
   }
-  return <h3>{children}</h3>;
+  return <h3 className="text-lg font-semibold mt-5 mb-2 text-foreground">{children}</h3>;
 }

@@ -11,6 +11,23 @@ import { H2Renderer, H3Renderer } from './ModuleHeadings';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { useGamification } from '@/hooks/useGamification';
 
+const markdownComponents = {
+  h2: H2Renderer,
+  h3: H3Renderer,
+  p: ({ children }) => <p className="text-base leading-relaxed text-foreground mb-4">{children}</p>,
+  ul: ({ children }) => <ul className="text-base leading-relaxed text-foreground mb-4 pl-6 list-disc space-y-1.5">{children}</ul>,
+  ol: ({ children }) => <ol className="text-base leading-relaxed text-foreground mb-4 pl-6 list-decimal space-y-1.5">{children}</ol>,
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+  blockquote: ({ children }) => (
+    <blockquote className="border-l-4 border-primary/40 pl-4 py-1 my-4 italic text-muted-foreground bg-muted/40 rounded-r-lg">
+      {children}
+    </blockquote>
+  ),
+  code: ({ children }) => <code className="font-mono text-sm bg-muted px-1.5 py-0.5 rounded">{children}</code>,
+  hr: () => <hr className="border-border my-6" />,
+};
+
 const STORAGE_PREFIX = 'nlb_module_progress_';
 
 function loadProgress(moduleId) {
@@ -235,7 +252,7 @@ export default function ModuleReader({
   return (
     <div className="px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-12">
       {/* Top bar: back + theme toggle */}
-      <div className="max-w-2xl mx-auto flex items-center justify-between mb-4">
+      <div className="max-w-3xl mx-auto flex items-center justify-between mb-4">
         <button
           onClick={onBack}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
@@ -253,7 +270,7 @@ export default function ModuleReader({
         </button>
       </div>
 
-      <article className="max-w-2xl mx-auto">
+      <article className="max-w-3xl mx-auto">
         {/* Micro-progress bar (hidden for intro & reference modules) */}
         {!noProgress && (
           <div className="sticky top-2 z-10 mb-6 rounded-xl bg-card/80 backdrop-blur border border-border/60 px-4 py-2.5">
@@ -306,8 +323,8 @@ export default function ModuleReader({
                   {block.children.map((child, j) => {
                     if (child.type === 'text') {
                       return (
-                        <div key={j} className="reader-prose">
-                          <ReactMarkdown components={{ h2: H2Renderer, h3: H3Renderer }}>{child.content}</ReactMarkdown>
+                        <div key={j} className="space-y-1">
+                          <ReactMarkdown components={markdownComponents}>{child.content}</ReactMarkdown>
                         </div>
                       );
                     }
