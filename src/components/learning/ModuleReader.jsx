@@ -7,6 +7,7 @@ import CheckpointCard from './CheckpointCard';
 import VideoCard from './VideoCard';
 import LetterSoundGrid from './LetterSoundGrid';
 import StreakChip from './StreakChip';
+import { H2Renderer, H3Renderer } from './ModuleHeadings';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { useGamification } from '@/hooks/useGamification';
 
@@ -306,7 +307,7 @@ export default function ModuleReader({
                     if (child.type === 'text') {
                       return (
                         <div key={j} className="reader-prose">
-                          <ReactMarkdown>{child.content}</ReactMarkdown>
+                          <ReactMarkdown components={{ h2: H2Renderer, h3: H3Renderer }}>{child.content}</ReactMarkdown>
                         </div>
                       );
                     }
