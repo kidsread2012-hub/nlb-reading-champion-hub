@@ -64,6 +64,11 @@
     "practice_prompt": {
       "type": "string",
       "title": "AI Practice Prompt"
+    },
+    "coming_soon": {
+      "type": "boolean",
+      "title": "Coming Soon",
+      "default": false
     }
   },
   "required": [

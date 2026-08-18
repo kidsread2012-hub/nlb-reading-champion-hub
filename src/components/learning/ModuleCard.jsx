@@ -6,6 +6,25 @@ export default function ModuleCard({ module, progress, onClick }) {
   const isCompleted = progress?.status === 'completed';
   const isInProgress = progress?.status === 'in_progress';
 
+  if (module.coming_soon) {
+    return (
+      <Card className="border-dashed border-border bg-muted/30 opacity-80">
+        <CardContent className="p-5 md:p-6 flex items-start gap-4">
+          <div className="shrink-0 mt-0.5">
+            <Clock className="w-5 h-5 text-muted-foreground" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-1.5 inline-block">
+              Coming Soon
+            </span>
+            <h3 className="text-base font-semibold mb-1 text-muted-foreground">{module.title}</h3>
+            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
   return (
     <Card className="hover:shadow-sm transition-all cursor-pointer border-border/60" onClick={onClick}>
       <CardContent className="p-5 md:p-6 flex items-start gap-4">
