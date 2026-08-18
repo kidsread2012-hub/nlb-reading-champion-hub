@@ -14,7 +14,7 @@ export default async function(req: Request): Promise<Response> {
     }
 
     const llmResponse = await base44.asServiceRole.integrations.Core.InvokeLLM({
-      prompt: `You are creating a multiple-choice check-in question for a volunteer training module in a children's reading program (kidsREAD).
+      prompt: `You are creating a multiple-choice pop quiz question for a volunteer training module in a children's reading program (kidsREAD).
 
 SCENARIO PROMPT:
 ${prompt}

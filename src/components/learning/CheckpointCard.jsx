@@ -49,7 +49,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
   const handleSelect = (i) => {
     if (selected !== null) return;
     setSelected(i);
-    if (onAnswered) onAnswered(index - 1, i);
+    if (onAnswered) onAnswered(index - 1, i, options[i].is_recommended);
   };
 
   const handleRetry = () => {
@@ -82,7 +82,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
         </div>
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
-            Check-in {index}
+            Pop quiz {index}
           </p>
           <p className="text-base font-semibold text-foreground mt-0.5">What would you do?</p>
         </div>
@@ -154,6 +154,19 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
               </button>
             );
           })}
+        </div>
+      )}
+
+      {/* Status line after selection */}
+      {selected !== null && options && !error && (
+        <div className="mt-4 ml-12">
+          {options[selected]?.is_recommended ? (
+            <p className="text-sm font-semibold text-emerald-600">Nice! That's the recommended approach.</p>
+          ) : (
+            <p className="text-sm font-semibold text-amber-600">
+              Not quite — the recommended approach is highlighted below.
+            </p>
+          )}
         </div>
       )}
 

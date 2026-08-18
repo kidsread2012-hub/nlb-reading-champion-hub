@@ -4,23 +4,28 @@ import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, ClipboardCheck, MessageCircle, ArrowRight, Award, Users } from 'lucide-react';
+import BadgesCard from '@/components/learning/BadgesCard';
+import { useGamification } from '@/hooks/useGamification';
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({ assessments: 0, completedModules: 0, clubs: 0 });
+  const [stats, setStats] = useState({ assessments: 0, completedModules: 0, clubs: 0, totalModules: 0 });
   const [loading, setLoading] = useState(true);
+  const { stats: quizStats } = useGamification();
 
   useEffect(() => {
     async function loadStats() {
       try {
-        const [assessments, progress, clubs] = await Promise.all([
+        const [assessments, progress, clubs, modules] = await Promise.all([
           base44.entities.Assessment.list(),
           base44.entities.LearningProgress.filter({ status: 'completed' }),
           base44.entities.Club.list(),
+          base44.entities.LearningModule.list(),
         ]);
         setStats({
           assessments: assessments.length,
           completedModules: progress.length,
           clubs: clubs.length,
+          totalModules: modules.length,
         });
       } catch (err) {
         // ignore
@@ -83,6 +88,11 @@ export default function Dashboard() {
         <StatCard icon={ClipboardCheck} label="Assessments" value={loading ? '—' : stats.assessments} />
         <StatCard icon={Award} label="Modules Done" value={loading ? '—' : stats.completedModules} />
         <StatCard icon={Users} label="Active Clubs" value={loading ? '—' : stats.clubs} />
+      </div>
+
+      {/* Achievements */}
+      <div className="mb-10">
+        <BadgesCard stats={quizStats} totalModules={stats.totalModules} completedModules={stats.completedModules} />
       </div>
 
       {/* Feature cards */}

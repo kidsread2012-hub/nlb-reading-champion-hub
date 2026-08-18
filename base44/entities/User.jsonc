@@ -7,6 +7,31 @@
         "admin",
         "user"
       ]
+    },
+    "quiz_stats": {
+      "type": "object",
+      "title": "Quiz Gamification Stats",
+      "properties": {
+        "quiz_correct_total": {
+          "type": "number",
+          "title": "Total Correct Pop Quizzes"
+        },
+        "quiz_current_streak": {
+          "type": "number",
+          "title": "Current Streak"
+        },
+        "quiz_best_streak": {
+          "type": "number",
+          "title": "Best Streak"
+        },
+        "badges": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "Earned Badges"
+        }
+      }
     }
   },
   "required": [

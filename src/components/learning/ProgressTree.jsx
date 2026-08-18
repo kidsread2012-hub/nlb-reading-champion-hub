@@ -1,34 +1,26 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Circle, Sparkles, BookOpen, ChevronDown, ChevronRight } from 'lucide-react';
+import { CheckCircle2, Circle, BookOpen, ChevronDown, ChevronRight, HelpCircle } from 'lucide-react';
 
 /**
  * Tabbed progress tree for the module reader.
- * Tab 1 "This module": checkpoints + practice, with live checkmarks.
+ * Tab 1 "This module": content sections + pop quizzes + practice, synced to scroll.
  * Tab 2 "All modules": every module in the same track, current highlighted.
  */
 export default function ProgressTree({
+  treeItems = [],
+  activeId,
+  onJump,
   module,
-  checkpoints,
-  answered,
-  practiceLaunched,
   trackModules,
   progress,
   onSwitchModule,
+  doneCount = 0,
+  totalCount = 0,
 }) {
   const [tab, setTab] = useState('module');
   const [open, setOpen] = useState(false);
 
-  const steps = [
-    ...checkpoints.map((_, i) => ({
-      id: `cp-${i}`,
-      label: `Check-in ${i + 1}`,
-      done: answered[i] !== undefined,
-    })),
-    { id: 'practice', label: 'Practice', done: practiceLaunched },
-  ];
-  const doneCount = steps.filter((s) => s.done).length;
-
-  const TabButton = ({ id, label, count }) => (
+  const TabButton = ({ id, label }) => (
     <button
       onClick={() => setTab(id)}
       className={`flex-1 px-3 py-2 rounded-lg text-xs font-semibold transition-colors ${
@@ -38,7 +30,6 @@ export default function ProgressTree({
       }`}
     >
       {label}
-      {count != null && <span className="ml-1 opacity-70">{count}</span>}
     </button>
   );
 
@@ -51,24 +42,42 @@ export default function ProgressTree({
 
   const TreeContent = () => {
     if (tab === 'module') {
+      if (treeItems.length === 0) {
+        return <p className="px-2.5 py-3 text-sm text-muted-foreground">No sections yet.</p>;
+      }
       return (
-        <div className="space-y-1">
-          {steps.map((s) => (
-            <div
-              key={s.id}
-              className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm"
-            >
-              <NodeIcon done={s.done} />
-              <span className={s.done ? 'text-foreground' : 'text-muted-foreground'}>
-                {s.label}
-              </span>
+        <div className="space-y-0.5">
+          {treeItems.map((s) => {
+            const isActive = activeId === s.id;
+            const icon =
+              s.type === 'quiz' ? (
+                <HelpCircle className={`w-4 h-4 shrink-0 ${s.done ? 'text-emerald-500' : 'text-muted-foreground/60'}`} />
+              ) : (
+                <NodeIcon done={s.done} />
+              );
+            return (
+              <button
+                key={s.id}
+                onClick={() => onJump && onJump(s.id)}
+                className={`w-full flex items-center gap-2.5 pl-3 pr-2.5 py-2 rounded-lg text-sm text-left transition-colors relative ${
+                  isActive
+                    ? 'bg-primary/10 text-primary font-medium'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted/60'
+                }`}
+              >
+                {isActive && <span className="absolute left-0 top-1.5 bottom-1.5 w-1 rounded-full bg-primary" />}
+                {icon}
+                <span className="line-clamp-1">{s.label}</span>
+              </button>
+            );
+          })}
+          {totalCount > 0 && (
+            <div className="px-2.5 pt-3 mt-2 border-t border-border/60">
+              <p className="text-xs text-muted-foreground">
+                {doneCount} of {totalCount} steps complete
+              </p>
             </div>
-          ))}
-          <div className="px-2.5 pt-3 mt-2 border-t border-border/60">
-            <p className="text-xs text-muted-foreground">
-              {doneCount} of {steps.length} steps complete
-            </p>
-          </div>
+          )}
         </div>
       );
     }
@@ -128,7 +137,7 @@ export default function ProgressTree({
         >
           <span className="flex items-center gap-2">
             <BookOpen className="w-4 h-4 text-primary" />
-            Progress · {doneCount}/{steps.length}
+            {totalCount > 0 ? `Progress · ${doneCount}/${totalCount}` : 'Module contents'}
           </span>
           {open ? <ChevronDown className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </button>
