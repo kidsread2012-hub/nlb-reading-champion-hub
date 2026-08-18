@@ -144,7 +144,9 @@ export default function ModuleReader({
   const { prefs, toggleTheme } = useAccessibility();
   const { stats, recordAnswer, awardBadge } = useGamification();
   const checkpoints = useMemo(() => module.checkpoints || [], [module.checkpoints]);
-  const isIntro = checkpoints.length === 0 && !module.practice_prompt;
+  const hasLetterCards = !!module.content?.includes('{{LETTER_CARDS');
+  const isIntro = checkpoints.length === 0 && !module.practice_prompt && !hasLetterCards;
+  const isReference = checkpoints.length === 0 && !module.practice_prompt && hasLetterCards;
   const [saved, setSaved] = useState(() => loadProgress(module.id));
   const completedRef = useRef(false);
 
@@ -157,10 +159,11 @@ export default function ModuleReader({
   }, [module.id]);
 
   const answeredCount = Object.keys(saved.answered).length;
-  const totalSteps = isIntro ? 0 : checkpoints.length + 1;
-  const doneSteps = isIntro ? 0 : answeredCount + (saved.practiceLaunched ? 1 : 0);
-  const allDone = isIntro ? false : answeredCount === checkpoints.length && saved.practiceLaunched;
-  const pct = isIntro || totalSteps === 0 ? 0 : Math.round((doneSteps / totalSteps) * 100);
+  const noProgress = isIntro || isReference;
+  const totalSteps = noProgress ? 0 : checkpoints.length + 1;
+  const doneSteps = noProgress ? 0 : answeredCount + (saved.practiceLaunched ? 1 : 0);
+  const allDone = noProgress ? false : answeredCount === checkpoints.length && saved.practiceLaunched;
+  const pct = noProgress || totalSteps === 0 ? 0 : Math.round((doneSteps / totalSteps) * 100);
 
   const handleAnswered = (checkIndex, selectedIndex, isCorrect) => {
     setSaved((prev) => {
@@ -250,8 +253,8 @@ export default function ModuleReader({
       </div>
 
       <article className="max-w-2xl mx-auto">
-        {/* Micro-progress bar (hidden for intro modules) */}
-        {!isIntro && (
+        {/* Micro-progress bar (hidden for intro & reference modules) */}
+        {!noProgress && (
           <div className="sticky top-2 z-10 mb-6 rounded-xl bg-card/80 backdrop-blur border border-border/60 px-4 py-2.5">
             <div className="flex items-center gap-3">
               <div className="flex-1">
@@ -343,7 +346,7 @@ export default function ModuleReader({
         </div>
 
         {/* Intro module: Continue CTA */}
-        {isIntro ? (
+        {isIntro && (
           <div className="mt-8 rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6 text-center">
             <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-3">
               <CheckCircle2 className="w-6 h-6 text-primary" />
@@ -359,7 +362,28 @@ export default function ModuleReader({
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </div>
-        ) : (
+        )}
+
+        {/* Reference module (letter sounds etc.): simple continue CTA */}
+        {isReference && (
+          <div className="mt-8 rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6 text-center">
+            <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold">Nice work!</h3>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">
+              {nextModule
+                ? `Continue to "${nextModule.title}" to keep learning.`
+                : "You've reached the end of this section."}
+            </p>
+            <Button size="lg" className="h-11" onClick={handleContinueIntro}>
+              {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        )}
+
+        {!noProgress && (
           <>
             {/* Practice CTA */}
             <div className="mt-8 rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6">
