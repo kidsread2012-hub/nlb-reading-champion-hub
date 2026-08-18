@@ -40,18 +40,16 @@ function clearProgress(moduleId) {
 function splitTextByH2(text) {
   const regex = /^## (.+)$/gm;
   const matches = [...text.matchAll(regex)];
-  if (matches.length === 0) return [{ heading: null, body: text }];
+  if (matches.length === 0) return [{ heading: null, content: text }];
   const parts = [];
   if (matches[0].index > 0) {
-    parts.push({ heading: null, body: text.slice(0, matches[0].index) });
+    parts.push({ heading: null, content: text.slice(0, matches[0].index) });
   }
   for (let i = 0; i < matches.length; i++) {
     const m = matches[i];
-    const lineEnd = text.indexOf('\n', m.index);
-    const heading = m[1].trim();
-    const bodyStart = lineEnd === -1 ? text.length : lineEnd + 1;
-    const bodyEnd = i + 1 < matches.length ? matches[i + 1].index : text.length;
-    parts.push({ heading, body: text.slice(bodyStart, bodyEnd) });
+    const start = m.index;
+    const end = i + 1 < matches.length ? matches[i + 1].index : text.length;
+    parts.push({ heading: m[1].trim(), content: text.slice(start, end) });
   }
   return parts;
 }
@@ -107,12 +105,12 @@ function buildBlocks(content, checkpoints) {
           flushSection();
           sectionCounter++;
           currentSection = { type: 'section', id: `sec-${sectionCounter}`, title: part.heading, children: [] };
-          if (part.body) currentSection.children.push({ type: 'text', content: part.body });
+          if (part.content) currentSection.children.push({ type: 'text', content: part.content });
         } else {
           if (!currentSection) {
             currentSection = { type: 'section', id: null, title: null, children: [] };
           }
-          if (part.body) currentSection.children.push({ type: 'text', content: part.body });
+          if (part.content) currentSection.children.push({ type: 'text', content: part.content });
         }
       }
     } else if (tok.type === 'video') {
