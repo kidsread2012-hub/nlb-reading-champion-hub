@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Loader2, BarChart3, TrendingUp, Users, Award } from 'lucide-react';
+import { Loader2, BarChart3, TrendingUp, Users, Award, ShieldCheck } from 'lucide-react';
 import {
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, Legend, LineChart, Line,
@@ -85,6 +85,12 @@ export default function Insights() {
   return (
     <div className="max-w-5xl mx-auto px-4 py-8 pb-24 md:pb-8">
       <div className="mb-10">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium">
+            <ShieldCheck className="w-3.5 h-3.5" />
+            Admin view
+          </span>
+        </div>
         <h1 className="text-3xl md:text-4xl font-bold mb-2 tracking-tight">Insights Dashboard</h1>
         <p className="text-base md:text-lg text-muted-foreground">Track assessment scores and reading progress across clubs.</p>
       </div>
