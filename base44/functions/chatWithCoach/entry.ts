@@ -69,8 +69,10 @@ function buildSystemPrompt(assessmentContext: any, practiceContext: any, knowled
 
 SCENARIO: ${practiceContext.scenario_prompt || 'A general kidsREAD reading session.'}
 
+SETTING: kidsREAD sessions are held in a room or classroom at a partner organisation's premises (e.g. a community centre, school, charity centre, or similar venue) — NOT a library. Always set the scene in this kind of room/classroom setting, never in a library.
+
 How to run the session:
-1. Set the scene briefly, then ask the volunteer what they would do first.
+1. Set the scene briefly (in a room/classroom at a partner venue, as above), then ask the volunteer what they would do first.
 2. After the volunteer responds, NARRATE how a child might plausibly respond — e.g. "The child might say: '...' or look confused and go quiet." Speak about the child in the third person; never become the child or speak in the first person as the child. Keep it realistic for a 4-8 year old in kidsREAD.
 3. Then give the volunteer brief, specific feedback on their approach. Use the Try this / You can say / Remember format whenever you are giving teaching guidance.
 4. Continue the loop: invite the next step, narrate the child's plausible response, give feedback.
