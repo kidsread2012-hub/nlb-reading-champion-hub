@@ -1,11 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle } from 'lucide-react';
+import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft } from 'lucide-react';
 
 export default function CoachChat() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -98,6 +99,21 @@ export default function CoachChat() {
       {/* Header */}
       <div className="px-4 md:px-6 py-4 border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
         <div className="flex items-center gap-3">
+          {practiceContext?.module_id && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="text-muted-foreground hover:text-foreground -ml-2"
+              onClick={() =>
+                navigate('/learning', {
+                  state: { reopenModuleId: practiceContext.module_id, segment: practiceContext.segment },
+                })
+              }
+            >
+              <ArrowLeft className="w-4 h-4 mr-1" />
+              Back to module
+            </Button>
+          )}
           <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
             {mode === 'guided_roleplay' ? (
               <GraduationCap className="w-5 h-5 text-primary" />

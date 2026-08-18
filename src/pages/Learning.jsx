@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, Mic } from 'lucide-react';
 import SegmentSection from '@/components/learning/SegmentSection';
@@ -24,6 +25,7 @@ const SEGMENTS = [
 ];
 
 export default function Learning() {
+  const location = useLocation();
   const [modules, setModules] = useState([]);
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
@@ -42,6 +44,29 @@ export default function Learning() {
           progressMap[p.module_id] = p;
         });
         setProgress(progressMap);
+
+        // Reopen a module when returning from guided practice
+        const reopenId = location.state?.reopenModuleId;
+        if (reopenId) {
+          const target = mods.find((m) => m.id === reopenId);
+          if (target) {
+            setActiveModule(target);
+            if (!progressMap[target.id]) {
+              try {
+                const created = await base44.entities.LearningProgress.create({
+                  module_id: target.id,
+                  module_title: target.title,
+                  status: 'in_progress',
+                });
+                setProgress((prev) => ({ ...prev, [target.id]: created }));
+              } catch (err) {
+                // ignore
+              }
+            }
+          }
+          // Clear the state so it doesn't reopen on later visits
+          window.history.replaceState({}, '');
+        }
       } catch (err) {
         // ignore
       } finally {

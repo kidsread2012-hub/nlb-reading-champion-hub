@@ -118,6 +118,8 @@ export default function ModuleReader({
           mode: 'guided_roleplay',
           title: module.title,
           scenario_prompt: module.practice_prompt,
+          module_id: module.id,
+          segment: module.segment,
         },
       },
     });
