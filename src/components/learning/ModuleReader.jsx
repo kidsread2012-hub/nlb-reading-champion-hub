@@ -400,8 +400,8 @@ export default function ModuleReader({
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    Build confidence by practising this scenario with the AI acting as a child
-                    participant before your real session.
+                    Build confidence by practising this scenario — the AI will describe how a child
+                    might respond, so you can rehearse your approach before your real session.
                   </p>
                 </div>
               </div>
