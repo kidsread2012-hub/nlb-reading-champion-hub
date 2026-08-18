@@ -36,12 +36,6 @@ export const RESOURCES = [
       },
       {
         type: 'link',
-        title: 'Read aloud tips for volunteers',
-        description: 'Practical techniques for engaging children during read-aloud sessions.',
-        url: 'https://www.readingrockets.org/article/read-aloud-tips',
-      },
-      {
-        type: 'link',
         title: 'Supporting struggling readers',
         description: 'Evidence-based strategies for helping children who find reading difficult.',
         url: 'https://www.readingrockets.org/helping',
