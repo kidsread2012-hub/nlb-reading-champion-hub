@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, ExternalLink, X } from 'lucide-react';
+import { Play, ExternalLink, X, Clock } from 'lucide-react';
 
 export function ResourceVideoCard({ item }) {
   const [open, setOpen] = useState(false);
@@ -71,6 +71,26 @@ export function ResourceVideoCard({ item }) {
 }
 
 export function ResourceLinkCard({ item }) {
+  if (item.type === 'wip') {
+    return (
+      <div className="flex items-center gap-3 p-4 rounded-xl border border-dashed border-border bg-muted/30">
+        <div className="shrink-0 w-10 h-10 rounded-lg bg-muted flex items-center justify-center">
+          <Clock className="w-4 h-4 text-muted-foreground" />
+        </div>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p className="text-sm font-semibold text-muted-foreground">{item.title}</p>
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground/70 bg-muted px-1.5 py-0.5 rounded">
+              Coming soon
+            </span>
+          </div>
+          {item.description && (
+            <p className="text-xs text-muted-foreground/80 mt-0.5 line-clamp-2">{item.description}</p>
+          )}
+        </div>
+      </div>
+    );
+  }
   return (
     <a
       href={item.url}
