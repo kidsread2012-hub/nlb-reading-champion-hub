@@ -61,6 +61,9 @@ export default function Dashboard() {
     <div className="max-w-5xl mx-auto px-4 md:px-8 py-8 md:py-12 pb-24 md:pb-12">
       {/* Hero */}
       <div className="mb-10 md:mb-12">
+        <p className="text-sm font-semibold tracking-wide uppercase text-primary mb-2">
+          Every Volunteer a Reading Champion
+        </p>
         <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-balance">
           Welcome to your Volunteer Learning Hub
         </h1>
