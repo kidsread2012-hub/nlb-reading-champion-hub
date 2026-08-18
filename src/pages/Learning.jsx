@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
-import { Loader2, Zap, Mic } from 'lucide-react';
+import { Loader2, Zap, BookOpen } from 'lucide-react';
 import SegmentSection from '@/components/learning/SegmentSection';
 import ModuleReader from '@/components/learning/ModuleReader';
 
@@ -23,7 +23,7 @@ const SEGMENTS = [
     id: 'storytelling',
     name: 'Read',
     tagline: 'Reading aloud & storytelling',
-    icon: Mic,
+    icon: BookOpen,
     iconBg: 'bg-rose-100',
     iconColor: 'text-rose-600',
     panelBg: 'bg-rose-50/40',
