@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, X, ArrowRight, ArrowLeft, Loader2, ClipboardCheck, MessageCircle } from 'lucide-react';
+import { addAssessment } from '@/lib/localStore';
 
 export default function AssessmentRunner({ clubs }) {
   const navigate = useNavigate();
@@ -67,18 +68,27 @@ export default function AssessmentRunner({ clubs }) {
         test_type: metadata.test_type,
         child_name: metadata.child_name.trim(),
         club_name: metadata.club_name,
-        volunteer_email: metadata.volunteer_email.trim(),
         answers,
       });
-      // Backend returns camelCase fields; normalize to snake_case for the results view
       const data = response.data || response;
-      setResult({
+      const result = {
         ...data,
         total_score: data.totalScore ?? data.total_score,
         total_possible: data.totalPossible ?? data.total_possible,
         proficiency_level: data.proficiencyLevel ?? data.proficiency_level,
         competencies_needing_help: data.competenciesNeedingHelp ?? data.competencies_needing_help,
+      };
+      addAssessment({
+        test_type: metadata.test_type,
+        child_name: metadata.child_name.trim(),
+        club_name: metadata.club_name,
+        assessment_date: data.assessment_date || new Date().toISOString().split('T')[0],
+        total_score: result.total_score,
+        total_possible: result.total_possible,
+        proficiency_level: result.proficiency_level,
+        competencies_needing_help: result.competencies_needing_help,
       });
+      setResult(result);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -162,7 +172,7 @@ export default function AssessmentRunner({ clubs }) {
 
             <div>
               <Label htmlFor="volunteer_email" className="text-base font-semibold mb-2 block">
-                Your Email <span className="text-muted-foreground font-normal">(to receive a copy of the results)</span>
+                Your Email <span className="text-muted-foreground font-normal">(optional)</span>
               </Label>
               <Input
                 id="volunteer_email"
@@ -197,7 +207,7 @@ export default function AssessmentRunner({ clubs }) {
       <div className="flex flex-col items-center justify-center py-24 px-4">
         <Loader2 className="w-12 h-12 text-primary animate-spin mb-4" />
         <h2 className="text-xl font-semibold">Processing assessment...</h2>
-        <p className="text-muted-foreground mt-1">Calculating scores and sending results email.</p>
+        <p className="text-muted-foreground mt-1">Calculating scores...</p>
       </div>
     );
   }
@@ -362,13 +372,13 @@ function AssessmentResult({ result, metadata, navigate }) {
         </Card>
       )}
 
-      {/* Email notice */}
+      {/* Save notice */}
       <div className="rounded-xl bg-primary/5 border border-primary/20 p-4 mb-6 flex items-start gap-3">
         <div className="w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center shrink-0 mt-0.5">
           <Check className="w-3 h-3 text-primary" />
         </div>
         <p className="text-base text-foreground">
-          A detailed summary has been sent to your email address.
+          Results saved on this device. Tap "Get Coaching Resources" for tailored activities.
         </p>
       </div>
 

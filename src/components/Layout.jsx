@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
-import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Library, Menu, X } from 'lucide-react';
+import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, Library, Menu, X } from 'lucide-react';
 import AccessibilityControl from '@/components/AccessibilityControl';
-import { useAuth } from '@/lib/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -10,14 +9,12 @@ const NAV_ITEMS = [
   { to: '/resources', label: 'Resources', icon: Library },
   { to: '/coach', label: 'AI Coach', icon: MessageCircle },
   { to: '/assessment', label: 'Assessment', icon: ClipboardCheck },
-  { to: '/insights', label: 'Insights', icon: BarChart3 },
 ];
 
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
-  const { user } = useAuth();
-  const navItems = NAV_ITEMS.filter((item) => item.to !== '/insights' || user?.role === 'admin');
+  const navItems = NAV_ITEMS;
 
   return (
     <div className="min-h-screen bg-background flex">

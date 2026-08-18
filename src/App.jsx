@@ -12,12 +12,10 @@ import Learning from '@/pages/Learning';
 import Resources from '@/pages/Resources';
 import Assessment from '@/pages/Assessment';
 import Coach from '@/pages/Coach';
-import Insights from '@/pages/Insights';
-import AdminRoute from '@/components/AdminRoute';
 // Add page imports here
 
 const AuthenticatedApp = () => {
-  const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
+  const { isLoadingAuth, isLoadingPublicSettings, authError } = useAuth();
 
   // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
@@ -28,18 +26,11 @@ const AuthenticatedApp = () => {
     );
   }
 
-  // Handle authentication errors
-  if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
+  if (authError?.type === 'user_not_registered') {
+    return <UserNotRegisteredError />;
   }
 
-  // Render the main app
+  // Render the main app (prototype mode — no login required)
   return (
     <Routes>
       <Route element={<Layout />}>
@@ -48,9 +39,6 @@ const AuthenticatedApp = () => {
         <Route path="/resources" element={<Resources />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/coach" element={<Coach />} />
-        <Route element={<AdminRoute />}>
-          <Route path="/insights" element={<Insights />} />
-        </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

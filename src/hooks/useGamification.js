@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getQuizStats, setQuizStats as persistQuizStats } from '@/lib/localStore';
 
 export const BADGE_DEFS = [
   { id: 'first_pop_quiz', name: 'First Pop Quiz', icon: 'Star', description: 'Answer your first pop quiz correctly' },
@@ -29,21 +29,16 @@ export function useGamification() {
   const [loaded, setLoaded] = useState(false);
   const statsRef = useRef(DEFAULT_STATS);
 
-  const load = useCallback(async () => {
-    try {
-      const me = await base44.auth.me();
-      const s = me.quiz_stats || {};
-      const next = {
-        quiz_correct_total: s.quiz_correct_total || 0,
-        quiz_current_streak: s.quiz_current_streak || 0,
-        quiz_best_streak: s.quiz_best_streak || 0,
-        badges: s.badges || [],
-      };
-      statsRef.current = next;
-      setStats(next);
-    } catch {
-      // ignore — user may not be loaded yet
-    }
+  const load = useCallback(() => {
+    const s = getQuizStats();
+    const next = {
+      quiz_correct_total: s.quiz_correct_total || 0,
+      quiz_current_streak: s.quiz_current_streak || 0,
+      quiz_best_streak: s.quiz_best_streak || 0,
+      badges: s.badges || [],
+    };
+    statsRef.current = next;
+    setStats(next);
     setLoaded(true);
   }, []);
 
@@ -51,7 +46,7 @@ export function useGamification() {
     load();
   }, [load]);
 
-  const recordAnswer = useCallback(async (isCorrect) => {
+  const recordAnswer = useCallback((isCorrect) => {
     const prev = statsRef.current;
     const next = { ...prev };
     if (isCorrect) {
@@ -65,25 +60,17 @@ export function useGamification() {
     const awarded = next.badges.filter((b) => !prev.badges.includes(b));
     statsRef.current = next;
     setStats(next);
-    try {
-      await base44.auth.updateMe({ quiz_stats: next });
-    } catch {
-      // ignore
-    }
+    persistQuizStats(next);
     return awarded;
   }, []);
 
-  const awardBadge = useCallback(async (badgeId) => {
+  const awardBadge = useCallback((badgeId) => {
     const prev = statsRef.current;
     if (prev.badges.includes(badgeId)) return false;
     const next = { ...prev, badges: [...prev.badges, badgeId] };
     statsRef.current = next;
     setStats(next);
-    try {
-      await base44.auth.updateMe({ quiz_stats: next });
-    } catch {
-      // ignore
-    }
+    persistQuizStats(next);
     return true;
   }, []);
 

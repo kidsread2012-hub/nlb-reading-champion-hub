@@ -3,31 +3,26 @@ import { Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { BookOpen, ClipboardCheck, MessageCircle, ArrowRight, Award, Users } from 'lucide-react';
+import { BookOpen, ClipboardCheck, MessageCircle, ArrowRight, Award } from 'lucide-react';
 import BadgesCard from '@/components/learning/BadgesCard';
 import { useGamification } from '@/hooks/useGamification';
-import { useAuth } from '@/lib/AuthContext';
+import { getModuleCompletions, getAssessments } from '@/lib/localStore';
 
 export default function Dashboard() {
-  const [stats, setStats] = useState({ assessments: 0, completedModules: 0, clubs: 0, totalModules: 0 });
+  const [stats, setStats] = useState({ assessments: 0, completedModules: 0, totalModules: 0 });
   const [loading, setLoading] = useState(true);
   const { stats: quizStats } = useGamification();
-  const { user } = useAuth();
-  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     async function loadStats() {
       try {
-        const [assessments, progress, clubs, modules] = await Promise.all([
-          base44.entities.Assessment.list(),
-          base44.entities.LearningProgress.filter({ status: 'completed' }),
-          base44.entities.Club.list(),
-          base44.entities.LearningModule.list(),
-        ]);
+        const modules = await base44.entities.LearningModule.list('order', 50);
+        const completions = getModuleCompletions();
+        const completedModules = Object.values(completions).filter((c) => c.status === 'completed').length;
+        const assessments = getAssessments();
         setStats({
           assessments: assessments.length,
-          completedModules: progress.length,
-          clubs: clubs.length,
+          completedModules,
           totalModules: modules.length,
         });
       } catch (err) {
@@ -90,10 +85,9 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className={`grid gap-4 md:gap-6 mb-12 ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
+      <div className="grid grid-cols-2 gap-4 md:gap-6 mb-12">
         <StatCard icon={ClipboardCheck} label="Assessments" value={loading ? '—' : stats.assessments} />
         <StatCard icon={Award} label="Modules Done" value={loading ? '—' : stats.completedModules} />
-        {isAdmin && <StatCard icon={Users} label="Active Clubs" value={loading ? '—' : stats.clubs} />}
       </div>
 
       {/* Achievements */}

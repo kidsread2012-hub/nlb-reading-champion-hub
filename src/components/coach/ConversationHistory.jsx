@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { getCoachSessions, deleteCoachSession } from '@/lib/localStore';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Loader2, MessageSquare, GraduationCap, ClipboardCheck, Trash2 } from 'lucide-react';
+import { MessageSquare, GraduationCap, ClipboardCheck, Trash2 } from 'lucide-react';
 
 const TYPE_META = {
   coach: { label: 'Coaching', icon: MessageSquare },
@@ -18,31 +18,15 @@ function formatDate(d) {
 
 export default function ConversationHistory({ onClose, onSelect }) {
   const [sessions, setSessions] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const list = await base44.entities.CoachSession.list('-updated_date', 50);
-        setSessions(list);
-      } catch (err) {
-        // ignore
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+    setSessions(getCoachSessions());
   }, []);
 
-  const handleDelete = async (e, session) => {
+  const handleDelete = (e, session) => {
     e.stopPropagation();
-    try {
-      await base44.entities.CoachConversation.deleteMany({ session_id: session.id });
-      await base44.entities.CoachSession.delete(session.id);
-      setSessions((prev) => prev.filter((s) => s.id !== session.id));
-    } catch (err) {
-      // ignore
-    }
+    deleteCoachSession(session.id);
+    setSessions((prev) => prev.filter((s) => s.id !== session.id));
   };
 
   return (
@@ -56,11 +40,7 @@ export default function ConversationHistory({ onClose, onSelect }) {
         <DialogHeader>
           <DialogTitle>Past conversations</DialogTitle>
         </DialogHeader>
-        {loading ? (
-          <div className="flex justify-center py-8">
-            <Loader2 className="w-6 h-6 text-muted-foreground animate-spin" />
-          </div>
-        ) : sessions.length === 0 ? (
+        {sessions.length === 0 ? (
           <p className="text-muted-foreground text-center py-8">
             No past conversations yet. Your coaching chats will appear here.
           </p>

@@ -4,6 +4,7 @@ import AssessmentRunner from '@/components/AssessmentRunner';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, Plus, Loader2, FileText, Calendar, TrendingUp } from 'lucide-react';
+import { getAssessments } from '@/lib/localStore';
 
 export default function Assessment() {
   const [clubs, setClubs] = useState([]);
@@ -14,12 +15,9 @@ export default function Assessment() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [clubList, assessments] = await Promise.all([
-          base44.entities.Club.list(),
-          base44.entities.Assessment.list('-created_date', 5),
-        ]);
+        const clubList = await base44.entities.Club.list();
         setClubs(clubList);
-        setRecentAssessments(assessments);
+        setRecentAssessments(getAssessments().slice(0, 5));
       } catch (err) {
         // ignore
       } finally {

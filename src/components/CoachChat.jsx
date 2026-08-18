@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft, History } from 'lucide-react';
 import { pickName, pickNames } from '@/lib/namePool';
 import ConversationHistory from '@/components/coach/ConversationHistory';
+import { addCoachSession, addCoachMessage, getCoachConversation } from '@/lib/localStore';
 
 export default function CoachChat() {
   const location = useLocation();
@@ -41,6 +42,15 @@ export default function CoachChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  const ensureSession = (type, title, context) => {
+    if (sessionId) return sessionId;
+    const s = addCoachSession({ title, type, context });
+    setSessionId(s.id);
+    // Persist any seed messages already in the UI
+    messages.forEach((m) => addCoachMessage(s.id, m));
+    return s.id;
+  };
+
   const startGuidedPractice = (rawCtx) => {
     // Pick a fresh name (or names for group scenarios), avoiding the last-used.
     const isGroup = rawCtx.segment === 'storytelling';
@@ -65,10 +75,16 @@ export default function CoachChat() {
             message: "Let's begin the guided practice. Please describe the setting and the child, then ask me what I would do first.",
             conversation_history: [],
             practice_context: enrichedCtx,
-            session_id: sessionId,
           });
-          setMessages([{ role: 'assistant', content: response.data.response }]);
-          if (response.data.session_id) setSessionId(response.data.session_id);
+          const assistantMessage = { role: 'assistant', content: response.data.response };
+          const s = addCoachSession({
+            title: enrichedCtx.title || 'Guided practice',
+            type: 'guided_practice',
+            context: enrichedCtx,
+          });
+          setSessionId(s.id);
+          addCoachMessage(s.id, assistantMessage);
+          setMessages([assistantMessage]);
         } catch (err) {
           setMessages([
             { role: 'assistant', content: "I'm ready to guide your practice. Tell me what you'd like to practise and I'll set the scene." },
@@ -83,6 +99,22 @@ export default function CoachChat() {
   const handleSend = async () => {
     if (!input.trim() || loading) return;
     const userMessage = { role: 'user', content: input.trim() };
+
+    let type = 'coach';
+    let title = userMessage.content.length > 40 ? userMessage.content.slice(0, 40).trim() + '…' : userMessage.content;
+    let context = null;
+    if (practiceContext) {
+      type = 'guided_practice';
+      title = practiceContext.title || 'Guided practice';
+      context = practiceContext;
+    } else if (assessmentContext) {
+      type = 'assessment_coaching';
+      title = `Coaching for ${assessmentContext.child_name || 'child'}`;
+      context = assessmentContext;
+    }
+    const sid = ensureSession(type, title, context);
+    addCoachMessage(sid, userMessage);
+
     setMessages((prev) => [...prev, userMessage]);
     setInput('');
     setLoading(true);
@@ -92,52 +124,36 @@ export default function CoachChat() {
         conversation_history: messages,
         assessment_context: assessmentContext,
         practice_context: practiceContext,
-        session_id: sessionId,
       });
-      setMessages((prev) => [...prev, { role: 'assistant', content: response.data.response }]);
-      if (response.data.session_id) setSessionId(response.data.session_id);
+      const assistantMessage = { role: 'assistant', content: response.data.response };
+      addCoachMessage(sid, assistantMessage);
+      setMessages((prev) => [...prev, assistantMessage]);
     } catch (err) {
-      setMessages((prev) => [
-        ...prev,
-        { role: 'assistant', content: "I'm sorry, I had trouble responding just now. Please try again." },
-      ]);
+      const errMsg = { role: 'assistant', content: "I'm sorry, I had trouble responding just now. Please try again." };
+      addCoachMessage(sid, errMsg);
+      setMessages((prev) => [...prev, errMsg]);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpenSession = async (session) => {
+  const handleOpenSession = (session) => {
     setShowHistory(false);
-    setMessages([]);
-    setLoading(true);
-    try {
-      const convo = await base44.entities.CoachConversation.filter(
-        { session_id: session.id },
-        'created_date',
-        200
-      );
-      const sorted = [...convo].sort(
-        (a, b) => new Date(a.created_date) - new Date(b.created_date)
-      );
-      setMessages(sorted.map((m) => ({ role: m.role, content: m.content })));
-      setSessionId(session.id);
-      if (session.type === 'guided_practice') {
-        setMode('guided_roleplay');
-        setPracticeContext(session.context || null);
-        setAssessmentContext(null);
-      } else if (session.type === 'assessment_coaching') {
-        setMode('coach');
-        setAssessmentContext(session.context || null);
-        setPracticeContext(null);
-      } else {
-        setMode('coach');
-        setAssessmentContext(null);
-        setPracticeContext(null);
-      }
-    } catch (err) {
-      // ignore
-    } finally {
-      setLoading(false);
+    const convo = getCoachConversation(session.id);
+    setMessages(convo.map((m) => ({ role: m.role, content: m.content })));
+    setSessionId(session.id);
+    if (session.type === 'guided_practice') {
+      setMode('guided_roleplay');
+      setPracticeContext(session.context || null);
+      setAssessmentContext(null);
+    } else if (session.type === 'assessment_coaching') {
+      setMode('coach');
+      setAssessmentContext(session.context || null);
+      setPracticeContext(null);
+    } else {
+      setMode('coach');
+      setAssessmentContext(null);
+      setPracticeContext(null);
     }
   };
 

@@ -4,6 +4,7 @@ import { base44 } from '@/api/base44Client';
 import { Loader2, Zap, BookOpen } from 'lucide-react';
 import SegmentSection from '@/components/learning/SegmentSection';
 import ModuleReader from '@/components/learning/ModuleReader';
+import { getModuleProgressMap, setModuleStatus } from '@/lib/localStore';
 
 const SEGMENTS = [
   {
@@ -54,16 +55,9 @@ export default function Learning() {
   useEffect(() => {
     async function loadData() {
       try {
-        const [mods, prog] = await Promise.all([
-          base44.entities.LearningModule.list('order', 50),
-          base44.entities.LearningProgress.list(),
-        ]);
+        const mods = await base44.entities.LearningModule.list('order', 50);
         setModules(mods);
-        const progressMap = {};
-        prog.forEach((p) => {
-          progressMap[p.module_id] = p;
-        });
-        setProgress(progressMap);
+        setProgress(getModuleProgressMap());
 
         // Reopen a module when returning from guided practice
         const reopenId = location.state?.reopenModuleId;
@@ -71,17 +65,9 @@ export default function Learning() {
           const target = mods.find((m) => m.id === reopenId);
           if (target) {
             setActiveModule(target);
-            if (!progressMap[target.id]) {
-              try {
-                const created = await base44.entities.LearningProgress.create({
-                  module_id: target.id,
-                  module_title: target.title,
-                  status: 'in_progress',
-                });
-                setProgress((prev) => ({ ...prev, [target.id]: created }));
-              } catch (err) {
-                // ignore
-              }
+            if (!getModuleProgressMap()[target.id]) {
+              setModuleStatus(target.id, 'in_progress', target.title);
+              setProgress(getModuleProgressMap());
             }
           }
           // Clear the state so it doesn't reopen on later visits
@@ -96,50 +82,27 @@ export default function Learning() {
     loadData();
   }, []);
 
-  const handleStartModule = async (mod) => {
+  const handleStartModule = (mod) => {
     setActiveModule(mod);
     if (!progress[mod.id]) {
-      try {
-        const created = await base44.entities.LearningProgress.create({
-          module_id: mod.id,
-          module_title: mod.title,
-          status: 'in_progress',
-        });
-        setProgress((prev) => ({ ...prev, [mod.id]: created }));
-      } catch (err) {
-        // ignore
-      }
+      setModuleStatus(mod.id, 'in_progress', mod.title);
+      setProgress(getModuleProgressMap());
     }
   };
 
   const handleSwitchModule = (mod) => {
     setActiveModule(mod);
     if (!progress[mod.id]) {
-      try {
-        const created = base44.entities.LearningProgress.create({
-          module_id: mod.id,
-          module_title: mod.title,
-          status: 'in_progress',
-        });
-        setProgress((prev) => ({ ...prev, [mod.id]: created }));
-      } catch (err) {
-        // ignore
-      }
+      setModuleStatus(mod.id, 'in_progress', mod.title);
+      setProgress(getModuleProgressMap());
     }
   };
 
-  const handleCompleteModule = async (mod) => {
-    try {
-      const existing = progress[mod.id];
-      if (!existing || existing.status === 'completed') return; // idempotent
-      const updated = await base44.entities.LearningProgress.update(existing.id, {
-        status: 'completed',
-        completed_date: new Date().toISOString().split('T')[0],
-      });
-      setProgress((prev) => ({ ...prev, [mod.id]: updated }));
-    } catch (err) {
-      // ignore
-    }
+  const handleCompleteModule = (mod) => {
+    const existing = progress[mod.id];
+    if (!existing || existing.status === 'completed') return; // idempotent
+    setModuleStatus(mod.id, 'completed', mod.title);
+    setProgress(getModuleProgressMap());
   };
 
   if (loading) {
