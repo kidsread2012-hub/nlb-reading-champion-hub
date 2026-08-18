@@ -23,7 +23,7 @@ export const LETTER_SOUND_DATA = {
   l: { phoneme: 'lll', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/98e261b82_L.mp3' },
   f: { phoneme: 'fff', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/c6890bfc6_F.mp3' },
   b: { phoneme: 'buh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/e7f2ed66b_B.mp3' },
-  j: { phoneme: 'juh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/a5d288c5e_speech.mp3' },
+  j: { phoneme: 'juh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/3e1480241_J.mp3' },
   v: { phoneme: 'vvv', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/b4870da7c_V.mp3' },
   w: { phoneme: 'wuh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/a401e24cf_W.mp3' },
   x: { phoneme: 'ks', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/f0e00ff90_X.mp3' },
