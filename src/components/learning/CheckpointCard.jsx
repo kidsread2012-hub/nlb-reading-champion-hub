@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { HelpCircle, Loader2, CheckCircle2, XCircle, Lightbulb } from 'lucide-react';
+import { HelpCircle, Loader2, CheckCircle2, XCircle, Lightbulb, RotateCcw } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 
 // Module-level cache keyed by checkpoint prompt — avoids re-calling the LLM
@@ -50,6 +50,10 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
     if (selected !== null) return;
     setSelected(i);
     if (onAnswered) onAnswered(index - 1, i, options[i].is_recommended);
+  };
+
+  const handleTryAgain = () => {
+    setSelected(null);
   };
 
   const handleRetry = () => {
@@ -179,6 +183,17 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
           </p>
           <p className="text-base text-foreground leading-relaxed">{explanation}</p>
         </div>
+      )}
+
+      {/* Try Again button after selection */}
+      {selected !== null && options && !error && (
+        <button
+          onClick={handleTryAgain}
+          className="mt-4 ml-12 inline-flex items-center gap-2 text-base font-medium text-primary hover:text-primary/80 transition-colors"
+        >
+          <RotateCcw className="w-4 h-4" />
+          Try Again
+        </button>
       )}
     </div>
   );
