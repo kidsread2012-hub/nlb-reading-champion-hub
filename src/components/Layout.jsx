@@ -74,7 +74,7 @@ export default function Layout() {
       {/* Mobile Menu Overlay */}
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-20 bg-black/40" onClick={() => setMobileOpen(false)}>
-          <div className="absolute top-14 inset-x-0 max-h-[calc(100vh-3.5rem)] overflow-y-auto bg-sidebar p-4 space-y-1 shadow-lg overscroll-contain" onClick={(e) => e.stopPropagation()}>
+          <div className="absolute top-14 inset-x-0 max-h-[calc(100vh-3.5rem-4.5rem)] overflow-y-auto bg-sidebar p-4 pb-6 space-y-1 shadow-lg overscroll-contain" onClick={(e) => e.stopPropagation()}>
             {navItems.map((item) => (
               <NavLink
                 key={item.to}
