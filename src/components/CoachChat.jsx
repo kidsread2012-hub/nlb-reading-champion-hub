@@ -167,7 +167,7 @@ export default function CoachChat() {
   const showEmptyState = messages.length === 0 && !loading && mode === 'coach' && !assessmentContext;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem)] md:h-screen max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-3.5rem-3.75rem)] md:h-screen max-w-3xl mx-auto">
       {/* Header */}
       <div className="px-4 md:px-6 py-4 border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
         <div className="flex items-center gap-3">
@@ -296,7 +296,7 @@ export default function CoachChat() {
       </div>
 
       {/* Input */}
-      <div className="px-4 py-4 border-t border-border bg-card">
+      <div className="px-4 pt-4 pb-20 md:pb-4 border-t border-border bg-card">
         <div className="flex gap-2 items-end">
           <textarea
             value={input}
