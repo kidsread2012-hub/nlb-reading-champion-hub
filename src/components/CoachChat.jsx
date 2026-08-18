@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft } from 'lucide-react';
+import { pickName, pickNames } from '@/lib/namePool';
 
 export default function CoachChat() {
   const location = useLocation();
@@ -15,6 +16,7 @@ export default function CoachChat() {
   const [mode, setMode] = useState('coach');
   const messagesEndRef = useRef(null);
   const bootstrappedRef = useRef(false);
+  const lastNameRef = useRef(null);
 
   useEffect(() => {
     if (location.state?.assessmentContext) {
@@ -36,8 +38,20 @@ export default function CoachChat() {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  const startGuidedPractice = (ctx) => {
-    setPracticeContext(ctx);
+  const startGuidedPractice = (rawCtx) => {
+    // Pick a fresh name (or names for group scenarios), avoiding the last-used.
+    const isGroup = rawCtx.segment === 'storytelling';
+    const enrichedCtx = { ...rawCtx };
+    if (isGroup) {
+      const names = pickNames(3, lastNameRef.current);
+      enrichedCtx.child_names = names;
+      lastNameRef.current = names[0];
+    } else {
+      const name = pickName(lastNameRef.current);
+      enrichedCtx.child_name = name;
+      lastNameRef.current = name;
+    }
+    setPracticeContext(enrichedCtx);
     setMode('guided_roleplay');
     if (!bootstrappedRef.current) {
       bootstrappedRef.current = true;
@@ -47,7 +61,7 @@ export default function CoachChat() {
           const response = await base44.functions.invoke('chatWithCoach', {
             message: "Let's begin the guided practice. Please describe the setting and the child, then ask me what I would do first.",
             conversation_history: [],
-            practice_context: ctx,
+            practice_context: enrichedCtx,
           });
           setMessages([{ role: 'assistant', content: response.data.response }]);
         } catch (err) {
