@@ -22,16 +22,16 @@ export default function BadgesCard({ stats, totalModules, completedModules }) {
   }
 
   return (
-    <div className="rounded-xl border border-white/10 bg-[#1e252b] text-white shadow-sm">
+    <div className="rounded-xl border border-border bg-card text-card-foreground shadow-sm">
       <div className="p-5 md:p-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-5 gap-3 flex-wrap">
           <div>
-            <h3 className="text-base font-semibold text-white">Your achievements</h3>
-            <p className="text-sm text-white/50">Pop quiz badges &amp; streaks</p>
+            <h3 className="text-base font-semibold text-foreground">Your achievements</h3>
+            <p className="text-sm text-muted-foreground">Pop quiz badges &amp; streaks</p>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/10 text-white text-sm font-semibold">
-            <Flame className="w-4 h-4 text-orange-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted text-foreground text-sm font-semibold">
+            <Flame className="w-4 h-4 text-orange-500" />
             Best streak: {stats.quiz_best_streak || 0}
           </span>
         </div>
@@ -51,14 +51,14 @@ export default function BadgesCard({ stats, totalModules, completedModules }) {
                   style={{ background: RAINBOW_BORDER }}
                   title={b.description}
                 >
-                  <div className="h-full w-full rounded-[10px] bg-[#232b33] flex flex-col items-center justify-center gap-2 px-1.5 text-center">
+                  <div className="h-full w-full rounded-[10px] bg-card flex flex-col items-center justify-center gap-2 px-1.5 text-center">
                     <div
                       className="w-11 h-11 rounded-full flex items-center justify-center"
                       style={{ backgroundColor: `${color}22` }}
                     >
                       <Icon className="w-6 h-6" style={{ color }} strokeWidth={2.5} />
                     </div>
-                    <span className="text-xs font-semibold text-white leading-tight">{b.name}</span>
+                    <span className="text-xs font-semibold text-foreground leading-tight">{b.name}</span>
                   </div>
                 </div>
               );
@@ -67,15 +67,15 @@ export default function BadgesCard({ stats, totalModules, completedModules }) {
             return (
               <div
                 key={b.id}
-                className="relative rounded-xl aspect-square border border-white/10 bg-[#2a333c] flex flex-col items-center justify-center gap-2 px-1.5 text-center overflow-hidden"
+                className="relative rounded-xl aspect-square border border-border bg-muted/40 flex flex-col items-center justify-center gap-2 px-1.5 text-center overflow-hidden"
                 title={b.description}
               >
-                <Icon className="absolute inset-0 m-auto w-20 h-20 text-white/[0.04]" strokeWidth={1.2} />
-                <div className="relative w-11 h-11 rounded-full flex items-center justify-center bg-white/[0.04]">
-                  <Icon className="w-6 h-6 text-white/30" strokeWidth={2} />
+                <Icon className="absolute inset-0 m-auto w-20 h-20 text-foreground/[0.05]" strokeWidth={1.2} />
+                <div className="relative w-11 h-11 rounded-full flex items-center justify-center bg-muted">
+                  <Icon className="w-6 h-6 text-muted-foreground" strokeWidth={2} />
                 </div>
-                <span className="relative text-xs font-medium text-white/40 leading-tight">{b.name}</span>
-                <Lock className="absolute bottom-2 right-2 w-3.5 h-3.5 text-white/25" />
+                <span className="relative text-xs font-medium text-muted-foreground leading-tight">{b.name}</span>
+                <Lock className="absolute bottom-2 right-2 w-3.5 h-3.5 text-muted-foreground/60" />
               </div>
             );
           })}

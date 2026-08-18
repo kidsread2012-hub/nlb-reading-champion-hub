@@ -6,11 +6,14 @@ import { Button } from '@/components/ui/button';
 import { BookOpen, ClipboardCheck, MessageCircle, ArrowRight, Award, Users } from 'lucide-react';
 import BadgesCard from '@/components/learning/BadgesCard';
 import { useGamification } from '@/hooks/useGamification';
+import { useAuth } from '@/lib/AuthContext';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ assessments: 0, completedModules: 0, clubs: 0, totalModules: 0 });
   const [loading, setLoading] = useState(true);
   const { stats: quizStats } = useGamification();
+  const { user } = useAuth();
+  const isAdmin = user?.role === 'admin';
 
   useEffect(() => {
     async function loadStats() {
@@ -87,10 +90,10 @@ export default function Dashboard() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 md:gap-6 mb-12">
+      <div className={`grid gap-4 md:gap-6 mb-12 ${isAdmin ? 'grid-cols-3' : 'grid-cols-2'}`}>
         <StatCard icon={ClipboardCheck} label="Assessments" value={loading ? '—' : stats.assessments} />
         <StatCard icon={Award} label="Modules Done" value={loading ? '—' : stats.completedModules} />
-        <StatCard icon={Users} label="Active Clubs" value={loading ? '—' : stats.clubs} />
+        {isAdmin && <StatCard icon={Users} label="Active Clubs" value={loading ? '—' : stats.clubs} />}
       </div>
 
       {/* Achievements */}

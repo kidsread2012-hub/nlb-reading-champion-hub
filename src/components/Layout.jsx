@@ -29,7 +29,6 @@ export default function Layout() {
             </div>
             <div>
               <h1 className="text-lg font-bold leading-tight text-sidebar-foreground">Reading Champions</h1>
-              <p className="text-xs text-sidebar-foreground/60">Every Volunteer a Reading Champion</p>
             </div>
           </div>
         </div>
