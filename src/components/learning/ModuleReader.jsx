@@ -398,9 +398,17 @@ export default function ModuleReader({
                 <p className="text-sm text-emerald-700 mt-1">
                   You've finished all pop quizzes and the practice session. Your progress has been saved.
                 </p>
-                <Button variant="outline" className="mt-4" onClick={onBack}>
-                  Back to modules
-                </Button>
+                <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
+                  {nextModule && (
+                    <Button className="h-11" onClick={() => onSwitchModule(nextModule)}>
+                      Continue to {nextModule.title}
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  )}
+                  <Button variant="outline" className="h-11" onClick={onBack}>
+                    Back to modules
+                  </Button>
+                </div>
               </div>
             ) : (
               <p className="mt-6 text-xs text-muted-foreground text-center">
