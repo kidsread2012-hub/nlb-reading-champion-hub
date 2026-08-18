@@ -77,7 +77,7 @@ export default function Dashboard() {
         <div className="flex flex-col sm:flex-row gap-3">
           <Link to="/learning">
             <Button size="lg" className="h-12 px-6 text-base w-full sm:w-auto">
-              Continue learning
+              {stats.completedModules > 0 ? 'Continue learning' : 'Start learning'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </Link>
