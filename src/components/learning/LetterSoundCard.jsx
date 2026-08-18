@@ -54,7 +54,7 @@ export default function LetterSoundCard({ letter, word }) {
         }`}
       />
       <span
-        className={`text-4xl md:text-5xl font-bold leading-none ${
+        className={`font-literacy text-4xl md:text-5xl font-bold leading-none ${
           playing ? 'text-primary' : 'text-foreground'
         }`}
       >
