@@ -2,8 +2,9 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft, History } from 'lucide-react';
 import { pickName, pickNames } from '@/lib/namePool';
+import ConversationHistory from '@/components/coach/ConversationHistory';
 
 export default function CoachChat() {
   const location = useLocation();
@@ -14,6 +15,8 @@ export default function CoachChat() {
   const [assessmentContext, setAssessmentContext] = useState(null);
   const [practiceContext, setPracticeContext] = useState(null);
   const [mode, setMode] = useState('coach');
+  const [sessionId, setSessionId] = useState(null);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef(null);
   const bootstrappedRef = useRef(false);
   const lastNameRef = useRef(null);
@@ -62,8 +65,10 @@ export default function CoachChat() {
             message: "Let's begin the guided practice. Please describe the setting and the child, then ask me what I would do first.",
             conversation_history: [],
             practice_context: enrichedCtx,
+            session_id: sessionId,
           });
           setMessages([{ role: 'assistant', content: response.data.response }]);
+          if (response.data.session_id) setSessionId(response.data.session_id);
         } catch (err) {
           setMessages([
             { role: 'assistant', content: "I'm ready to guide your practice. Tell me what you'd like to practise and I'll set the scene." },
@@ -87,13 +92,50 @@ export default function CoachChat() {
         conversation_history: messages,
         assessment_context: assessmentContext,
         practice_context: practiceContext,
+        session_id: sessionId,
       });
       setMessages((prev) => [...prev, { role: 'assistant', content: response.data.response }]);
+      if (response.data.session_id) setSessionId(response.data.session_id);
     } catch (err) {
       setMessages((prev) => [
         ...prev,
         { role: 'assistant', content: "I'm sorry, I had trouble responding just now. Please try again." },
       ]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleOpenSession = async (session) => {
+    setShowHistory(false);
+    setMessages([]);
+    setLoading(true);
+    try {
+      const convo = await base44.entities.CoachConversation.filter(
+        { session_id: session.id },
+        'created_date',
+        200
+      );
+      const sorted = [...convo].sort(
+        (a, b) => new Date(a.created_date) - new Date(b.created_date)
+      );
+      setMessages(sorted.map((m) => ({ role: m.role, content: m.content })));
+      setSessionId(session.id);
+      if (session.type === 'guided_practice') {
+        setMode('guided_roleplay');
+        setPracticeContext(session.context || null);
+        setAssessmentContext(null);
+      } else if (session.type === 'assessment_coaching') {
+        setMode('coach');
+        setAssessmentContext(session.context || null);
+        setPracticeContext(null);
+      } else {
+        setMode('coach');
+        setAssessmentContext(null);
+        setPracticeContext(null);
+      }
+    } catch (err) {
+      // ignore
     } finally {
       setLoading(false);
     }
@@ -147,8 +189,23 @@ export default function CoachChat() {
                 : 'Teaching, storytelling & programme guidance'}
             </p>
           </div>
+          <Button
+            variant="outline"
+            size="sm"
+            className="ml-auto shrink-0"
+            onClick={() => setShowHistory(true)}
+          >
+            <History className="w-4 h-4 mr-2" />
+            Past conversations
+          </Button>
         </div>
       </div>
+      {showHistory && (
+        <ConversationHistory
+          onClose={() => setShowHistory(false)}
+          onSelect={handleOpenSession}
+        />
+      )}
 
       {/* Messages / Empty state */}
       <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 pb-4">

@@ -1,31 +1,28 @@
 {
-  "name": "CoachConversation",
+  "name": "CoachSession",
   "type": "object",
   "properties": {
-    "role": {
+    "title": {
+      "type": "string",
+      "title": "Title"
+    },
+    "type": {
       "type": "string",
       "enum": [
-        "user",
-        "assistant"
+        "coach",
+        "guided_practice",
+        "assessment_coaching"
       ],
-      "title": "Role"
+      "title": "Type"
     },
-    "content": {
-      "type": "string",
-      "title": "Content"
-    },
-    "assessment_context": {
+    "context": {
       "type": "object",
-      "title": "Assessment Context"
-    },
-    "session_id": {
-      "type": "string",
-      "title": "Session ID"
+      "title": "Session Context"
     }
   },
   "required": [
-    "role",
-    "content"
+    "title",
+    "type"
   ],
   "rls": {
     "read": {

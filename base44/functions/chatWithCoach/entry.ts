@@ -7,7 +7,7 @@ export default async function(req: Request): Promise<Response> {
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
     const body = await req.json();
-    const { message, conversation_history, assessment_context, practice_context } = body;
+    const { message, conversation_history, assessment_context, practice_context, session_id } = body;
 
     if (!message) {
       return Response.json({ error: 'Message is required' }, { status: 400 });
@@ -45,19 +45,48 @@ export default async function(req: Request): Promise<Response> {
 
     const responseText = typeof llmResponse === 'string' ? llmResponse : JSON.stringify(llmResponse);
 
+    // Resolve or create a conversation session
+    let resolvedSessionId = session_id || null;
+    if (!resolvedSessionId) {
+      let sessionType = 'coach';
+      let sessionTitle = message.length > 40 ? message.slice(0, 40).trim() + '…' : message;
+      let sessionContext = null;
+      if (practice_context) {
+        sessionType = 'guided_practice';
+        sessionTitle = practice_context.title || 'Guided practice';
+        sessionContext = practice_context;
+      } else if (assessment_context) {
+        sessionType = 'assessment_coaching';
+        sessionTitle = `Coaching for ${assessment_context.child_name || 'child'}`;
+        sessionContext = assessment_context;
+      }
+      try {
+        const session = await base44.entities.CoachSession.create({
+          title: sessionTitle,
+          type: sessionType,
+          context: sessionContext,
+        });
+        resolvedSessionId = session.id;
+      } catch (e) {
+        // proceed without session
+      }
+    }
+
     // Persist the exchange
     await base44.entities.CoachConversation.create({
       role: 'user',
       content: message,
       assessment_context: assessment_context || practice_context || null,
+      session_id: resolvedSessionId,
     });
     await base44.entities.CoachConversation.create({
       role: 'assistant',
       content: responseText,
       assessment_context: assessment_context || practice_context || null,
+      session_id: resolvedSessionId,
     });
 
-    return Response.json({ response: responseText });
+    return Response.json({ response: responseText, session_id: resolvedSessionId });
   } catch (error) {
     return Response.json({ error: error.message }, { status: 500 });
   }
