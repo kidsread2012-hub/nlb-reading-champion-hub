@@ -4,25 +4,26 @@ import { LETTER_SOUND_DATA } from '@/lib/letterSounds';
 import { onPlayingChange, playAudio, playTTS, stopAll, getPlayingLetter } from '@/lib/letterAudioManager';
 
 export default function LetterSoundCard({ letter, word }) {
-  const [playing, setPlaying] = useState(() => getPlayingLetter() === letter.toLowerCase());
-  const data = LETTER_SOUND_DATA[letter.toLowerCase()] || {};
+  const audioKey = letter.includes('/') ? letter.replace('/', '').toLowerCase() : letter.toLowerCase();
+  const [playing, setPlaying] = useState(() => getPlayingLetter() === audioKey);
+  const data = LETTER_SOUND_DATA[audioKey] || {};
 
   useEffect(() => {
     return onPlayingChange((activeLetter) => {
-      setPlaying(activeLetter === letter.toLowerCase());
+      setPlaying(activeLetter === audioKey);
     });
-  }, [letter]);
+  }, [audioKey]);
 
   const play = () => {
-    if (getPlayingLetter() === letter.toLowerCase()) {
+    if (getPlayingLetter() === audioKey) {
       // tapping the currently-playing card stops it
       stopAll();
       return;
     }
     if (data.audioUrl) {
-      playAudio(data.audioUrl, letter.toLowerCase(), () => playTTS(data.phoneme || letter, letter.toLowerCase()));
+      playAudio(data.audioUrl, audioKey, () => playTTS(data.phoneme || letter, audioKey));
     } else {
-      playTTS(data.phoneme || letter, letter.toLowerCase());
+      playTTS(data.phoneme || letter, audioKey);
     }
   };
 
@@ -30,7 +31,7 @@ export default function LetterSoundCard({ letter, word }) {
     <button
       type="button"
       onClick={play}
-      aria-label={`Play the letter ${letter} sound, as in ${word}`}
+      aria-label={`Play the ${letter} sound, as in ${word}`}
       className={`relative flex flex-col items-center justify-center gap-1.5 rounded-2xl border-2 p-4 md:p-5 transition-all duration-200 select-none cursor-pointer
         ${playing
           ? 'border-primary bg-primary/10 scale-[1.04] shadow-md'
@@ -43,7 +44,7 @@ export default function LetterSoundCard({ letter, word }) {
         }`}
       />
       <span
-        className={`font-literacy text-4xl md:text-5xl font-bold leading-none ${
+        className={`font-literacy ${letter.length > 1 ? 'text-3xl md:text-4xl' : 'text-4xl md:text-5xl'} font-bold leading-none ${
           playing ? 'text-primary' : 'text-foreground'
         }`}
       >
