@@ -45,7 +45,7 @@ export default function CoachChat() {
       (async () => {
         try {
           const response = await base44.functions.invoke('chatWithCoach', {
-            message: "Let's begin the guided practice. Please set the scene for me.",
+            message: "Let's begin the guided practice. Please describe the setting and the child, then ask me what I would do first.",
             conversation_history: [],
             practice_context: ctx,
           });
