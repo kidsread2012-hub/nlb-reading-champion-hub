@@ -82,7 +82,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
           <HelpCircle className="w-5 h-5" />
         </div>
         <div>
-          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wide">
+          <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
             Pop quiz {index}
           </p>
           <p className="text-base font-semibold text-foreground mt-0.5">What would you do?</p>
@@ -96,7 +96,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
       {loading && (
         <div className="pl-12 flex items-center gap-2 text-muted-foreground py-2">
           <Loader2 className="w-4 h-4 animate-spin" />
-          <span className="text-sm">Preparing options...</span>
+          <span className="text-base">Preparing options...</span>
         </div>
       )}
 
@@ -104,14 +104,14 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
       {error && !loading && (
         <div className="pl-12 space-y-3">
           <div className="p-4 rounded-xl bg-card border border-border/60">
-            <p className="text-sm font-semibold text-primary mb-1.5 flex items-center gap-1.5">
+            <p className="text-base font-semibold text-primary mb-1.5 flex items-center gap-1.5">
               <Lightbulb className="w-4 h-4" /> Recommended approach
             </p>
             <p className="text-base text-foreground leading-relaxed">{checkpoint.model_answer}</p>
           </div>
           <button
             onClick={handleRetry}
-            className="text-sm text-amber-700 underline hover:text-amber-800"
+            className="text-base text-amber-700 underline hover:text-amber-800"
           >
             Try multiple-choice again
           </button>
@@ -174,7 +174,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
       {/* Explanation reveal after selection */}
       {selected !== null && options && !error && (
         <div className="mt-4 ml-12 p-4 rounded-xl bg-card border border-border/60">
-          <p className="text-sm font-semibold text-primary mb-1.5 flex items-center gap-1.5">
+          <p className="text-base font-semibold text-primary mb-1.5 flex items-center gap-1.5">
             <Lightbulb className="w-4 h-4" /> Why this approach?
           </p>
           <p className="text-base text-foreground leading-relaxed">{explanation}</p>

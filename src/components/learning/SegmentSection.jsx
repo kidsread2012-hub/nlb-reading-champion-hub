@@ -35,7 +35,7 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
         </div>
         <div className="flex-1 min-w-0">
           <h2 className={`text-xl font-bold ${segment.titleColor}`}>{segment.name}</h2>
-          <p className={`text-sm ${segment.subtitleColor} truncate`}>
+          <p className={`text-base ${segment.subtitleColor} truncate`}>
             {segment.tagline} · {completedInSegment}/{modules.length} completed
           </p>
         </div>
@@ -61,8 +61,8 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
                   <div className="w-7 h-7 rounded-lg bg-primary/15 flex items-center justify-center">
                     <Type className="w-4 h-4 text-primary" />
                   </div>
-                  <h3 className="text-sm font-semibold text-primary">Letter Sounds</h3>
-                  <span className="text-xs text-muted-foreground">
+                  <h3 className="text-base font-semibold text-primary">Letter Sounds</h3>
+                  <span className="text-sm text-muted-foreground">
                     · {lsCompleted}/{letterSoundModules.length} completed
                   </span>
                 </div>

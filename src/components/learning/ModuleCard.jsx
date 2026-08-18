@@ -14,11 +14,11 @@ export default function ModuleCard({ module, progress, onClick }) {
             <Clock className="w-5 h-5 text-muted-foreground" />
           </div>
           <div className="flex-1 min-w-0">
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-1.5 inline-block">
+            <span className="text-sm font-medium px-2 py-0.5 rounded-full bg-muted text-muted-foreground mb-1.5 inline-block">
               Coming Soon
             </span>
-            <h3 className="text-base font-semibold mb-1 text-muted-foreground">{module.title}</h3>
-            <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
+            <h3 className="text-lg font-semibold mb-1 text-muted-foreground">{module.title}</h3>
+            <p className="text-base text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
           </div>
         </CardContent>
       </Card>
@@ -39,15 +39,15 @@ export default function ModuleCard({ module, progress, onClick }) {
         </div>
         <div className="flex-1 min-w-0">
           {isInProgress && (
-            <span className="text-xs font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 mb-1.5 inline-block">
+            <span className="text-sm font-medium px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 mb-1.5 inline-block">
               In Progress
             </span>
           )}
-          <h3 className="text-base font-semibold mb-1">{module.title}</h3>
-          <p className="text-sm text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
+          <h3 className="text-lg font-semibold mb-1">{module.title}</h3>
+          <p className="text-base text-muted-foreground line-clamp-2 leading-relaxed">{module.description}</p>
           {module.duration_minutes && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2.5">
-              <Clock className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-2.5">
+              <Clock className="w-4 h-4" />
               {module.duration_minutes} min
             </div>
           )}

@@ -50,7 +50,7 @@ export default function LetterSoundCard({ letter, word }) {
       >
         {letter}
       </span>
-      <span className="text-sm md:text-base text-muted-foreground">{word}</span>
+      <span className="text-base md:text-lg text-muted-foreground">{word}</span>
     </button>
   );
 }

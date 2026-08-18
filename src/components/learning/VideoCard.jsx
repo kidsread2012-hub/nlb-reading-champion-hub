@@ -54,12 +54,12 @@ export default function VideoCard({ videoId, title, description, start, end }) {
           )}
         </div>
         <div className="flex-1 min-w-0">
-          <p className="text-xs font-semibold text-primary uppercase tracking-wide">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wide">
             {hasVideo ? 'Watch this' : 'Video coming'}
           </p>
           <p className="text-base font-semibold text-foreground mt-0.5">{title}</p>
           {description && (
-            <p className="text-sm text-muted-foreground mt-0.5">{description}</p>
+            <p className="text-base text-muted-foreground mt-0.5">{description}</p>
           )}
         </div>
       </button>

@@ -260,10 +260,10 @@ export default function ModuleReader({
             <div className="flex items-center gap-3">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-1.5">
-                  <span className="text-xs font-medium text-muted-foreground">
+                  <span className="text-sm font-medium text-muted-foreground">
                     {doneSteps} of {totalSteps} steps
                   </span>
-                  <span className="text-xs font-semibold text-foreground">{pct}%</span>
+                  <span className="text-sm font-semibold text-foreground">{pct}%</span>
                 </div>
                 <div className="h-1.5 bg-muted rounded-full overflow-hidden">
                   <div
@@ -274,8 +274,8 @@ export default function ModuleReader({
               </div>
               <StreakChip streak={stats.quiz_current_streak} />
               {allDone && (
-                <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
-                  <CheckCircle2 className="w-3.5 h-3.5" /> Done
+                <span className="flex items-center gap-1 text-sm font-medium text-emerald-600">
+                  <CheckCircle2 className="w-4 h-4" /> Done
                 </span>
               )}
             </div>
@@ -284,14 +284,14 @@ export default function ModuleReader({
 
         {/* Header */}
         <header className="mb-8">
-          <span className="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
+          <span className="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-sm font-medium mb-3">
             {module.category}
           </span>
           <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">{module.title}</h1>
           <p className="text-base text-muted-foreground">{module.description}</p>
           {module.duration_minutes && (
-            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
-              <Clock className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-1.5 text-sm text-muted-foreground mt-3">
+              <Clock className="w-4 h-4" />
               {module.duration_minutes} min read
             </div>
           )}
@@ -394,8 +394,8 @@ export default function ModuleReader({
                   <div className="flex items-center gap-2 flex-wrap">
                     <h3 className="text-base font-semibold">Practise with the AI Coach</h3>
                     {saved.practiceLaunched && (
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                        <CheckCircle2 className="w-3.5 h-3.5" /> Done
+                      <span className="inline-flex items-center gap-1 text-sm font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        <CheckCircle2 className="w-4 h-4" /> Done
                       </span>
                     )}
                   </div>
@@ -434,7 +434,7 @@ export default function ModuleReader({
                 </div>
               </div>
             ) : (
-              <p className="mt-6 text-xs text-muted-foreground text-center">
+              <p className="mt-6 text-sm text-muted-foreground text-center">
                 This module completes automatically once you answer all pop quizzes and launch the
                 practice session.
               </p>
