@@ -68,7 +68,7 @@ export default function Dashboard() {
           Every Volunteer a Reading Champion
         </p>
         <h1 className="text-3xl md:text-4xl font-bold mb-3 tracking-tight text-balance">
-          Welcome to your Volunteer Learning Hub
+          Welcome to your Volunteer Hub
         </h1>
         <p className="text-base md:text-lg text-muted-foreground max-w-xl mb-6">
           Everything you need to support children on their reading journey — learn at your own pace,
