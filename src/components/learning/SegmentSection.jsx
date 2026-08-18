@@ -12,15 +12,16 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
   const letterSoundModules = modules.filter(isLetterSound);
   const otherModules = modules.filter((m) => !isLetterSound(m));
 
-  const minLSOrder = letterSoundModules.length
+  const hasLS = letterSoundModules.length > 0;
+  const minLSOrder = hasLS
     ? Math.min(...letterSoundModules.map((m) => m.order))
     : Infinity;
-  const maxLSOrder = letterSoundModules.length
+  const maxLSOrder = hasLS
     ? Math.max(...letterSoundModules.map((m) => m.order))
     : -Infinity;
 
   const beforeLS = otherModules.filter((m) => m.order < minLSOrder);
-  const afterLS = otherModules.filter((m) => m.order > maxLSOrder);
+  const afterLS = hasLS ? otherModules.filter((m) => m.order > maxLSOrder) : [];
   const lsCompleted = letterSoundModules.filter(
     (m) => progress[m.id]?.status === 'completed'
   ).length;

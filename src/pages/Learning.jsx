@@ -21,7 +21,7 @@ const SEGMENTS = [
   },
   {
     id: 'storytelling',
-    name: 'Storytelling',
+    name: 'Read',
     tagline: 'Reading aloud & storytelling',
     icon: Mic,
     iconBg: 'bg-rose-100',
