@@ -20,14 +20,22 @@ export default function VideoCard({ videoId, title, description, start, end }) {
 
   let embedSrc = '';
   let watchUrl = '';
+  let isDrive = false;
   if (hasVideo) {
-    const params = new URLSearchParams({ rel: '0' });
-    if (start) params.set('start', String(start));
-    if (end) params.set('end', String(end));
-    embedSrc = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
-    const watchParams = new URLSearchParams();
-    if (start) watchParams.set('t', `${start}s`);
-    watchUrl = `https://www.youtube.com/watch?v=${videoId}&${watchParams.toString()}`;
+    if (videoId.startsWith('drive:')) {
+      isDrive = true;
+      const fileId = videoId.slice(6);
+      embedSrc = `https://drive.google.com/file/d/${fileId}/preview`;
+      watchUrl = `https://drive.google.com/file/d/${fileId}/view`;
+    } else {
+      const params = new URLSearchParams({ rel: '0' });
+      if (start) params.set('start', String(start));
+      if (end) params.set('end', String(end));
+      embedSrc = `https://www.youtube.com/embed/${videoId}?${params.toString()}`;
+      const watchParams = new URLSearchParams();
+      if (start) watchParams.set('t', `${start}s`);
+      watchUrl = `https://www.youtube.com/watch?v=${videoId}&${watchParams.toString()}`;
+    }
   }
 
   return (
@@ -81,7 +89,7 @@ export default function VideoCard({ videoId, title, description, start, end }) {
                 title={title}
                 className="absolute inset-0 w-full h-full"
                 frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
                 allowFullScreen
               />
             </div>
@@ -92,7 +100,7 @@ export default function VideoCard({ videoId, title, description, start, end }) {
               className="mt-3 inline-flex items-center gap-1.5 text-sm text-white/80 hover:text-white underline underline-offset-2"
             >
               <ExternalLink className="w-4 h-4" />
-              Open on YouTube
+              {isDrive ? 'Open in Google Drive' : 'Open on YouTube'}
             </a>
           </div>
         </div>
