@@ -3,12 +3,12 @@
 // The LetterSoundCard prefers audioUrl when present and falls back to SpeechSynthesis (en-GB).
 
 export const LETTER_SOUND_DATA = {
-  s: { phoneme: 'sss', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/ce54c0e4e_speech.mp3' },
-  a: { phoneme: 'ah', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/e00047ec2_speech.mp3' },
-  t: { phoneme: 'tuh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/53d1d7894_speech.mp3' },
-  i: { phoneme: 'ih', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/28973ffec_speech.mp3' },
-  p: { phoneme: 'puh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/14121e840_speech.mp3' },
-  n: { phoneme: 'nnn', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/1a90ac96e_speech.mp3' },
+  s: { phoneme: 'sss', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/232e72353_S.mp3' },
+  a: { phoneme: 'ah', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/bb704d89e_A.mp3' },
+  t: { phoneme: 'tuh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/fabd387ef_T.mp3' },
+  i: { phoneme: 'ih', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/280dd7e1f_I.mp3' },
+  p: { phoneme: 'puh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/cdc93a374_P.mp3' },
+  n: { phoneme: 'nnn', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/d30153b3b_N.mp3' },
   c: { phoneme: 'cuh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/8c35aa331_speech.mp3' },
   k: { phoneme: 'cuh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/095e1cb4d_speech.mp3' },
   e: { phoneme: 'eh', audioUrl: 'https://media.base44.com/files/public/6a8283551ca1bf63608554d5/639b0d2dc_speech.mp3' },
