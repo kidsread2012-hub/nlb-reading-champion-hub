@@ -52,16 +52,24 @@ export const RESOURCES = [
     topic: 'Activity Books',
     items: [
       {
-        type: 'link',
-        title: 'NLB activity sheets',
-        description: 'Printable activity sheets and booklets to use during your sessions.',
-        url: 'https://www.nlb.gov.sg/our-services/learning/kidsread',
+        type: 'wip',
+        title: 'Power Up! Level 1 Activity Book',
+        description: 'Printable activity sheets for Level 1 sessions.',
       },
       {
-        type: 'link',
-        title: 'PhonicsPlay printable resources',
-        description: 'Downloadable phonics activities and worksheets for early readers.',
-        url: 'https://www.phonicsplay.co.uk/resources',
+        type: 'wip',
+        title: 'Power Up! Level 2 Activity Book',
+        description: 'Printable activity sheets for Level 2 sessions.',
+      },
+      {
+        type: 'wip',
+        title: 'Power Up! Level 3 Activity Book',
+        description: 'Printable activity sheets for Level 3 sessions.',
+      },
+      {
+        type: 'wip',
+        title: 'Power Up! Level 4 Activity Book',
+        description: 'Printable activity sheets for Level 4 sessions.',
       },
     ],
   },
