@@ -24,8 +24,8 @@ export const RESOURCES = [
     items: [
       {
         type: 'video',
-        title: 'How to pronounce pure letter sounds',
-        description: 'A clear, British-English guide to all 44 letter sounds — watch this before teaching any of the Group modules.',
+        title: 'Letter sounds pronunciation guide',
+        description: 'A clear, British-English guide to all 44 letter sounds — watch this before teaching any of the Power Up! modules.',
         videoId: 'UCI2mu7URBc',
       },
       {
