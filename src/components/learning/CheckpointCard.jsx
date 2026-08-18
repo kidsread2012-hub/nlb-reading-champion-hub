@@ -55,6 +55,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
   const handleRetry = () => {
     setError(false);
     setLoading(true);
+    setSelected(null);
     cache.delete(checkpoint.prompt);
     (async () => {
       try {
