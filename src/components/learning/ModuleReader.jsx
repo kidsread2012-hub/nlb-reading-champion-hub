@@ -372,9 +372,7 @@ export default function ModuleReader({
             </div>
             <h3 className="text-lg font-semibold">Nice work!</h3>
             <p className="text-sm text-muted-foreground mt-1 mb-4">
-              {nextModule
-                ? `Continue to "${nextModule.title}" to keep learning.`
-                : "You've reached the end of this section."}
+              {nextModule ? 'Keep going to learn the next set of sounds.' : "You've reached the end of this section."}
             </p>
             <Button size="lg" className="h-11" onClick={handleContinueIntro}>
               {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
