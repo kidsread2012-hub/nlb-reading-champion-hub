@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, CheckCircle2, Sparkles, Sun, Moon, ArrowRight } from 
 import ReactMarkdown from 'react-markdown';
 import CheckpointCard from './CheckpointCard';
 import VideoCard from './VideoCard';
+import LetterSoundGrid from './LetterSoundGrid';
 import StreakChip from './StreakChip';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { useGamification } from '@/hooks/useGamification';
@@ -55,7 +56,7 @@ function splitTextByH2(text) {
 
 function buildBlocks(content, checkpoints) {
   const rawTokens = [];
-  const regex = /\{\{CHECKPOINT\}\}|\{\{VIDEO:([^}]*)\}\}/g;
+  const regex = /\{\{CHECKPOINT\}\}|\{\{VIDEO:([^}]*)\}\}|\{\{LETTER_CARDS:([^}]*)\}\}/g;
   let lastIndex = 0;
   let checkpointIndex = 0;
   let match;
@@ -68,7 +69,7 @@ function buildBlocks(content, checkpoints) {
         rawTokens.push({ type: 'checkpoint', index: checkpointIndex, checkpoint: checkpoints[checkpointIndex] });
       }
       checkpointIndex++;
-    } else {
+    } else if (match[1] !== undefined) {
       const p = match[1].split('|').map((s) => (s || '').trim());
       rawTokens.push({
         type: 'video',
@@ -78,6 +79,12 @@ function buildBlocks(content, checkpoints) {
         start: p[3] || '',
         end: p[4] || '',
       });
+    } else if (match[2] !== undefined) {
+      const cards = match[2].split('|').map((pair) => {
+        const [letter, word] = pair.split(',').map((s) => (s || '').trim());
+        return { letter, word };
+      });
+      rawTokens.push({ type: 'letter_cards', cards });
     }
     lastIndex = regex.lastIndex;
   }
@@ -116,6 +123,9 @@ function buildBlocks(content, checkpoints) {
     } else if (tok.type === 'checkpoint') {
       flushSection();
       blocks.push({ type: 'checkpoint', index: tok.index, checkpoint: tok.checkpoint });
+    } else if (tok.type === 'letter_cards') {
+      flushSection();
+      blocks.push({ type: 'letter_cards', cards: tok.cards });
     }
   }
   flushSection();
@@ -324,6 +334,9 @@ export default function ModuleReader({
                   />
                 </div>
               );
+            }
+            if (block.type === 'letter_cards') {
+              return <LetterSoundGrid key={i} cards={block.cards} />;
             }
             return null;
           })}
