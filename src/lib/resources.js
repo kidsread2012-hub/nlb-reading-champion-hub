@@ -25,7 +25,7 @@ export const RESOURCES = [
       {
         type: 'video',
         title: 'Letter sounds pronunciation guide',
-        description: 'A clear, British-English guide to all 44 letter sounds — watch this before teaching any of the Power Up! modules.',
+        description: 'A clear, British-English guide to all 42 letter sounds — watch this before teaching any of the Power Up! modules.',
         videoId: 'v_w93Ig4E3o',
       },
       {
