@@ -13,6 +13,11 @@ const SEGMENTS = [
     icon: Zap,
     iconBg: 'bg-amber-100',
     iconColor: 'text-amber-600',
+    panelBg: 'bg-amber-50/40',
+    panelBorder: 'border-amber-200/70',
+    bandBg: 'bg-gradient-to-r from-amber-100/80 to-amber-50/40',
+    titleColor: 'text-amber-900',
+    subtitleColor: 'text-amber-700/80',
   },
   {
     id: 'storytelling',
@@ -21,6 +26,11 @@ const SEGMENTS = [
     icon: Mic,
     iconBg: 'bg-rose-100',
     iconColor: 'text-rose-600',
+    panelBg: 'bg-rose-50/40',
+    panelBorder: 'border-rose-200/70',
+    bandBg: 'bg-gradient-to-r from-rose-100/80 to-rose-50/40',
+    titleColor: 'text-rose-900',
+    subtitleColor: 'text-rose-700/80',
   },
 ];
 
