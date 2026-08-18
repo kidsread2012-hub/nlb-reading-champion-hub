@@ -1,41 +1,30 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Volume2 } from 'lucide-react';
 import { LETTER_SOUND_DATA } from '@/lib/letterSounds';
+import { onPlayingChange, playAudio, playTTS, stopAll, getPlayingLetter } from '@/lib/letterAudioManager';
 
 export default function LetterSoundCard({ letter, word }) {
-  const [playing, setPlaying] = useState(false);
-  const audioRef = useRef(null);
+  const [playing, setPlaying] = useState(() => getPlayingLetter() === letter.toLowerCase());
   const data = LETTER_SOUND_DATA[letter.toLowerCase()] || {};
 
-  const speakTTS = useCallback(() => {
-    if (!window.speechSynthesis) return;
-    window.speechSynthesis.cancel();
-    const u = new SpeechSynthesisUtterance(data.phoneme || letter);
-    u.lang = 'en-GB';
-    u.rate = 0.75;
-    u.onstart = () => setPlaying(true);
-    u.onend = () => setPlaying(false);
-    u.onerror = () => setPlaying(false);
-    window.speechSynthesis.speak(u);
-  }, [data, letter]);
+  useEffect(() => {
+    return onPlayingChange((activeLetter) => {
+      setPlaying(activeLetter === letter.toLowerCase());
+    });
+  }, [letter]);
 
-  const play = useCallback(() => {
-    if (window.speechSynthesis) window.speechSynthesis.cancel();
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current = null;
+  const play = () => {
+    if (getPlayingLetter() === letter.toLowerCase()) {
+      // tapping the currently-playing card stops it
+      stopAll();
+      return;
     }
     if (data.audioUrl) {
-      const audio = new Audio(data.audioUrl);
-      audioRef.current = audio;
-      audio.onplaying = () => setPlaying(true);
-      audio.onended = () => setPlaying(false);
-      audio.onerror = () => speakTTS();
-      audio.play().catch(() => speakTTS());
+      playAudio(data.audioUrl, letter.toLowerCase(), () => playTTS(data.phoneme || letter, letter.toLowerCase()));
     } else {
-      speakTTS();
+      playTTS(data.phoneme || letter, letter.toLowerCase());
     }
-  }, [data, speakTTS]);
+  };
 
   return (
     <button
