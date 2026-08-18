@@ -9,7 +9,7 @@ const SEGMENTS = [
   {
     id: 'power_up',
     name: 'Power Up!',
-    tagline: 'Phonics e-learning',
+    tagline: 'Building reading confidence',
     icon: Zap,
     iconBg: 'bg-amber-100',
     iconColor: 'text-amber-600',

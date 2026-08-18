@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Clock, CheckCircle2, Sparkles, Sun, Moon, ArrowRight } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 import CheckpointCard from './CheckpointCard';
 import VideoCard from './VideoCard';
-import ProgressTree from './ProgressTree';
 import StreakChip from './StreakChip';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { useGamification } from '@/hooks/useGamification';
@@ -88,7 +87,6 @@ function buildBlocks(content, checkpoints) {
 
   const blocks = [];
   let currentSection = null;
-  let sectionCounter = 0;
 
   const flushSection = () => {
     if (currentSection) {
@@ -103,22 +101,21 @@ function buildBlocks(content, checkpoints) {
       for (const part of parts) {
         if (part.heading) {
           flushSection();
-          sectionCounter++;
-          currentSection = { type: 'section', id: `sec-${sectionCounter}`, title: part.heading, children: [] };
+          currentSection = { type: 'section', title: part.heading, children: [] };
           if (part.content) currentSection.children.push({ type: 'text', content: part.content });
         } else {
           if (!currentSection) {
-            currentSection = { type: 'section', id: null, title: null, children: [] };
+            currentSection = { type: 'section', title: null, children: [] };
           }
           if (part.content) currentSection.children.push({ type: 'text', content: part.content });
         }
       }
     } else if (tok.type === 'video') {
-      if (!currentSection) currentSection = { type: 'section', id: null, title: null, children: [] };
+      if (!currentSection) currentSection = { type: 'section', title: null, children: [] };
       currentSection.children.push(tok);
     } else if (tok.type === 'checkpoint') {
       flushSection();
-      blocks.push({ type: 'checkpoint', id: `quiz-${tok.index}`, index: tok.index, checkpoint: tok.checkpoint });
+      blocks.push({ type: 'checkpoint', index: tok.index, checkpoint: tok.checkpoint });
     }
   }
   flushSection();
@@ -139,75 +136,20 @@ export default function ModuleReader({
   const checkpoints = useMemo(() => module.checkpoints || [], [module.checkpoints]);
   const isIntro = checkpoints.length === 0 && !module.practice_prompt;
   const [saved, setSaved] = useState(() => loadProgress(module.id));
-  const [activeId, setActiveId] = useState(null);
   const completedRef = useRef(false);
-  const elementRefs = useRef({});
 
   const blocks = useMemo(() => buildBlocks(module.content, checkpoints), [module.content, checkpoints]);
 
-  // Reload saved progress when switching modules
   useEffect(() => {
     setSaved(loadProgress(module.id));
     completedRef.current = false;
-    elementRefs.current = {};
-    setActiveId(null);
   }, [module.id]);
-
-  // Build tree items in document order
-  const treeItems = useMemo(() => {
-    const items = [];
-    for (const b of blocks) {
-      if (b.type === 'section' && b.id && b.title) {
-        items.push({ id: b.id, label: b.title, type: 'section', done: false });
-      } else if (b.type === 'checkpoint') {
-        items.push({
-          id: b.id,
-          label: `Pop quiz ${b.index + 1}`,
-          type: 'quiz',
-          done: saved.answered[b.index] !== undefined,
-        });
-      }
-    }
-    if (!isIntro) {
-      items.push({ id: 'practice', label: 'Practice', type: 'practice', done: saved.practiceLaunched });
-    }
-    return items;
-  }, [blocks, saved, isIntro]);
 
   const answeredCount = Object.keys(saved.answered).length;
   const totalSteps = isIntro ? 0 : checkpoints.length + 1;
   const doneSteps = isIntro ? 0 : answeredCount + (saved.practiceLaunched ? 1 : 0);
   const allDone = isIntro ? false : answeredCount === checkpoints.length && saved.practiceLaunched;
   const pct = isIntro || totalSteps === 0 ? 0 : Math.round((doneSteps / totalSteps) * 100);
-
-  const registerRef = useCallback((id) => (el) => {
-    if (!id) return;
-    if (el) elementRefs.current[id] = el;
-    else delete elementRefs.current[id];
-  }, []);
-
-  // Scroll spy: highlight the section / quiz / practice currently in view
-  useEffect(() => {
-    const els = Object.values(elementRefs.current);
-    if (els.length === 0) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length > 0) {
-          visible.sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-          setActiveId(visible[0].target.id);
-        }
-      },
-      { rootMargin: '0px 0px -75% 0px', threshold: 0 }
-    );
-    els.forEach((el) => observer.observe(el));
-    return () => observer.disconnect();
-  }, [blocks]);
-
-  const handleJump = useCallback((id) => {
-    const el = elementRefs.current[id];
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, []);
 
   const handleAnswered = (checkIndex, selectedIndex, isCorrect) => {
     setSaved((prev) => {
@@ -260,7 +202,6 @@ export default function ModuleReader({
     else onBack();
   };
 
-  // Auto-complete when the final pop quiz is answered (practice already done)
   useEffect(() => {
     if (allDone && !completedRef.current) {
       completedRef.current = true;
@@ -279,7 +220,7 @@ export default function ModuleReader({
   return (
     <div className="px-4 md:px-8 py-6 md:py-8 pb-24 md:pb-12">
       {/* Top bar: back + theme toggle */}
-      <div className="max-w-5xl mx-auto flex items-center justify-between mb-4">
+      <div className="max-w-2xl mx-auto flex items-center justify-between mb-4">
         <button
           onClick={onBack}
           className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors text-sm"
@@ -297,184 +238,165 @@ export default function ModuleReader({
         </button>
       </div>
 
-      <div className="max-w-5xl mx-auto flex gap-8">
-        <ProgressTree
-          treeItems={treeItems}
-          activeId={activeId}
-          onJump={handleJump}
-          module={module}
-          trackModules={trackModules}
-          progress={progress}
-          onSwitchModule={onSwitchModule}
-          doneCount={doneSteps}
-          totalCount={totalSteps}
-        />
-
-        {/* Center content */}
-        <article className="flex-1 min-w-0">
-          {/* Micro-progress bar (hidden for intro modules) */}
-          {!isIntro && (
-            <div className="sticky top-2 z-10 mb-6 rounded-xl bg-card/80 backdrop-blur border border-border/60 px-4 py-2.5">
-              <div className="flex items-center gap-3">
-                <div className="flex-1">
-                  <div className="flex items-center justify-between mb-1.5">
-                    <span className="text-xs font-medium text-muted-foreground">
-                      {doneSteps} of {totalSteps} steps
-                    </span>
-                    <span className="text-xs font-semibold text-foreground">{pct}%</span>
-                  </div>
-                  <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
-                      style={{ width: `${pct}%` }}
-                    />
-                  </div>
-                </div>
-                <StreakChip streak={stats.quiz_current_streak} />
-                {allDone && (
-                  <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Done
+      <article className="max-w-2xl mx-auto">
+        {/* Micro-progress bar (hidden for intro modules) */}
+        {!isIntro && (
+          <div className="sticky top-2 z-10 mb-6 rounded-xl bg-card/80 backdrop-blur border border-border/60 px-4 py-2.5">
+            <div className="flex items-center gap-3">
+              <div className="flex-1">
+                <div className="flex items-center justify-between mb-1.5">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    {doneSteps} of {totalSteps} steps
                   </span>
-                )}
+                  <span className="text-xs font-semibold text-foreground">{pct}%</span>
+                </div>
+                <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                  <div
+                    className="h-full bg-primary rounded-full transition-all duration-500 ease-out"
+                    style={{ width: `${pct}%` }}
+                  />
+                </div>
               </div>
+              <StreakChip streak={stats.quiz_current_streak} />
+              {allDone && (
+                <span className="flex items-center gap-1 text-xs font-medium text-emerald-600">
+                  <CheckCircle2 className="w-3.5 h-3.5" /> Done
+                </span>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* Header */}
+        <header className="mb-8">
+          <span className="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
+            {module.category}
+          </span>
+          <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">{module.title}</h1>
+          <p className="text-base text-muted-foreground">{module.description}</p>
+          {module.duration_minutes && (
+            <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
+              <Clock className="w-3.5 h-3.5" />
+              {module.duration_minutes} min read
             </div>
           )}
+        </header>
 
-          {/* Header */}
-          <header className="mb-8">
-            <span className="inline-block px-2.5 py-0.5 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
-              {module.category}
-            </span>
-            <h1 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">{module.title}</h1>
-            <p className="text-base text-muted-foreground max-w-[65ch]">{module.description}</p>
-            {module.duration_minutes && (
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-3">
-                <Clock className="w-3.5 h-3.5" />
-                {module.duration_minutes} min read
-              </div>
-            )}
-          </header>
-
-          {/* Content */}
-          <div className="max-w-[65ch] space-y-1">
-            {blocks.map((block, i) => {
-              if (block.type === 'section') {
-                return (
-                  <section key={i} id={block.id || undefined} ref={registerRef(block.id)}>
-                    {block.children.map((child, j) => {
-                      if (child.type === 'text') {
-                        return (
-                          <div key={j} className="reader-prose">
-                            <ReactMarkdown>{child.content}</ReactMarkdown>
-                          </div>
-                        );
-                      }
+        {/* Content */}
+        <div className="space-y-1">
+          {blocks.map((block, i) => {
+            if (block.type === 'section') {
+              return (
+                <section key={i}>
+                  {block.children.map((child, j) => {
+                    if (child.type === 'text') {
                       return (
-                        <VideoCard
-                          key={j}
-                          videoId={child.videoId}
-                          title={child.title}
-                          description={child.description}
-                          start={child.start}
-                          end={child.end}
-                        />
+                        <div key={j} className="reader-prose">
+                          <ReactMarkdown>{child.content}</ReactMarkdown>
+                        </div>
                       );
-                    })}
-                  </section>
-                );
-              }
-              if (block.type === 'checkpoint') {
-                return (
-                  <div key={i} id={block.id} ref={registerRef(block.id)}>
-                    <CheckpointCard
-                      checkpoint={block.checkpoint}
-                      index={block.index + 1}
-                      initialSelected={
-                        saved.answered[block.index] !== undefined ? saved.answered[block.index] : null
-                      }
-                      onAnswered={handleAnswered}
-                    />
-                  </div>
-                );
-              }
-              return null;
-            })}
-          </div>
+                    }
+                    return (
+                      <VideoCard
+                        key={j}
+                        videoId={child.videoId}
+                        title={child.title}
+                        description={child.description}
+                        start={child.start}
+                        end={child.end}
+                      />
+                    );
+                  })}
+                </section>
+              );
+            }
+            if (block.type === 'checkpoint') {
+              return (
+                <div key={i}>
+                  <CheckpointCard
+                    checkpoint={block.checkpoint}
+                    index={block.index + 1}
+                    initialSelected={
+                      saved.answered[block.index] !== undefined ? saved.answered[block.index] : null
+                    }
+                    onAnswered={handleAnswered}
+                  />
+                </div>
+              );
+            }
+            return null;
+          })}
+        </div>
 
-          {/* Intro module: Continue CTA */}
-          {isIntro ? (
-            <div className="mt-8 max-w-[65ch] rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6 text-center">
-              <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-3">
-                <CheckCircle2 className="w-6 h-6 text-primary" />
+        {/* Intro module: Continue CTA */}
+        {isIntro ? (
+          <div className="mt-8 rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6 text-center">
+            <div className="w-11 h-11 rounded-full bg-primary/15 flex items-center justify-center mx-auto mb-3">
+              <CheckCircle2 className="w-6 h-6 text-primary" />
+            </div>
+            <h3 className="text-lg font-semibold">Ready to start?</h3>
+            <p className="text-sm text-muted-foreground mt-1 mb-4">
+              {nextModule
+                ? `Continue to "${nextModule.title}" to begin building your skills.`
+                : "You've reached the end of this introduction."}
+            </p>
+            <Button size="lg" className="h-11" onClick={handleContinueIntro}>
+              {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </div>
+        ) : (
+          <>
+            {/* Practice CTA */}
+            <div className="mt-8 rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6">
+              <div className="flex items-start gap-3 mb-4">
+                <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
+                  <Sparkles className="w-5 h-5 text-primary" />
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h3 className="text-base font-semibold">Practise with the AI Coach</h3>
+                    {saved.practiceLaunched && (
+                      <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
+                        <CheckCircle2 className="w-3.5 h-3.5" /> Done
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-0.5">
+                    Build confidence by practising this scenario with the AI acting as a child
+                    participant before your real session.
+                  </p>
+                </div>
               </div>
-              <h3 className="text-lg font-semibold">Ready to start?</h3>
-              <p className="text-sm text-muted-foreground mt-1 mb-4">
-                {nextModule
-                  ? `Continue to "${nextModule.title}" to begin building your skills.`
-                  : "You've reached the end of this introduction."}
-              </p>
-              <Button size="lg" className="h-11" onClick={handleContinueIntro}>
-                {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
-                <ArrowRight className="w-4 h-4 ml-2" />
+              <Button size="lg" className="w-full h-11" onClick={handlePractice}>
+                <Sparkles className="w-4 h-4 mr-2" />
+                {saved.practiceLaunched ? 'Practise again' : 'Practise this scenario'}
               </Button>
             </div>
-          ) : (
-            <>
-              {/* Practice CTA */}
-              <div
-                id="practice"
-                ref={registerRef('practice')}
-                className="mt-8 max-w-[65ch] rounded-2xl bg-primary/5 border border-primary/15 p-5 md:p-6"
-              >
-                <div className="flex items-start gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary/15 flex items-center justify-center shrink-0">
-                    <Sparkles className="w-5 h-5 text-primary" />
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <h3 className="text-base font-semibold">Practise with the AI Coach</h3>
-                      {saved.practiceLaunched && (
-                        <span className="inline-flex items-center gap-1 text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Done
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-0.5">
-                      Build confidence by practising this scenario with the AI acting as a child
-                      participant before your real session.
-                    </p>
-                  </div>
+
+            {/* Completion / hint */}
+            {allDone ? (
+              <div className="mt-6 rounded-2xl bg-emerald-50 border border-emerald-200 p-5 text-center">
+                <div className="w-11 h-11 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-2">
+                  <CheckCircle2 className="w-6 h-6 text-emerald-600" />
                 </div>
-                <Button size="lg" className="w-full h-11" onClick={handlePractice}>
-                  <Sparkles className="w-4 h-4 mr-2" />
-                  {saved.practiceLaunched ? 'Practise again' : 'Practise this scenario'}
+                <h3 className="text-lg font-semibold text-emerald-800">Module completed!</h3>
+                <p className="text-sm text-emerald-700 mt-1">
+                  You've finished all pop quizzes and the practice session. Your progress has been saved.
+                </p>
+                <Button variant="outline" className="mt-4" onClick={onBack}>
+                  Back to modules
                 </Button>
               </div>
-
-              {/* Completion / hint */}
-              {allDone ? (
-                <div className="mt-6 max-w-[65ch] rounded-2xl bg-emerald-50 border border-emerald-200 p-5 text-center">
-                  <div className="w-11 h-11 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-2">
-                    <CheckCircle2 className="w-6 h-6 text-emerald-600" />
-                  </div>
-                  <h3 className="text-lg font-semibold text-emerald-800">Module completed!</h3>
-                  <p className="text-sm text-emerald-700 mt-1">
-                    You've finished all pop quizzes and the practice session. Your progress has been saved.
-                  </p>
-                  <Button variant="outline" className="mt-4" onClick={onBack}>
-                    Back to modules
-                  </Button>
-                </div>
-              ) : (
-                <p className="mt-6 max-w-[65ch] text-xs text-muted-foreground text-center">
-                  This module completes automatically once you answer all pop quizzes and launch the
-                  practice session.
-                </p>
-              )}
-            </>
-          )}
-        </article>
-      </div>
+            ) : (
+              <p className="mt-6 text-xs text-muted-foreground text-center">
+                This module completes automatically once you answer all pop quizzes and launch the
+                practice session.
+              </p>
+            )}
+          </>
+        )}
+      </article>
     </div>
   );
 }

@@ -147,7 +147,7 @@ export default function CoachChat() {
               </div>
               <p className="text-sm text-muted-foreground mb-3">Ask me anything about:</p>
               <ul className="text-sm text-foreground space-y-1.5">
-                <li>• Teaching phonics &amp; early reading (letter sounds, blending, tricky words)</li>
+                <li>• Building reading confidence &amp; early reading skills (letter sounds, blending, tricky words)</li>
                 <li>• Storytelling and reading aloud techniques</li>
                 <li>• Facilitating sessions and managing group behaviour</li>
                 <li>• Routine kidsREAD programme matters</li>
@@ -173,7 +173,7 @@ export default function CoachChat() {
                   mode: 'guided_roleplay',
                   title: 'Guided practice',
                   scenario_prompt:
-                    'A general kidsREAD reading session. The volunteer wants to practise guiding a child through a reading or phonics activity. Help them rehearse their approach step by step.',
+                    'A general kidsREAD reading session. The volunteer wants to practise guiding a child through a reading activity. Help them rehearse their approach step by step.',
                 })
               }
             >

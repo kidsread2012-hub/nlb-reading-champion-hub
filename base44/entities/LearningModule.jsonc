@@ -25,7 +25,7 @@
     "category": {
       "type": "string",
       "enum": [
-        "Phonics",
+        "Reading Confidence",
         "Reading Strategies",
         "Volunteer Skills",
         "Assessment Guide"

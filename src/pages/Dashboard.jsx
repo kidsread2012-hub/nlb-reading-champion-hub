@@ -41,7 +41,7 @@ export default function Dashboard() {
       to: '/learning',
       icon: BookOpen,
       title: 'Self-Paced Learning',
-      description: 'Build your skills with training modules on phonics, reading strategies, and volunteer best practices.',
+      description: 'Build your skills with training modules on reading confidence, reading strategies, and volunteer best practices.',
     },
     {
       to: '/assessment',
