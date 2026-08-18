@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Outlet, NavLink, useLocation } from 'react-router-dom';
 import { LayoutDashboard, BookOpen, ClipboardCheck, MessageCircle, BarChart3, Menu, X } from 'lucide-react';
 import AccessibilityControl from '@/components/AccessibilityControl';
+import { useAuth } from '@/lib/AuthContext';
 
 const NAV_ITEMS = [
   { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
@@ -14,6 +15,8 @@ const NAV_ITEMS = [
 export default function Layout() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { user } = useAuth();
+  const navItems = NAV_ITEMS.filter((item) => item.to !== '/insights' || user?.role === 'admin');
 
   return (
     <div className="min-h-screen bg-background flex">
@@ -31,7 +34,7 @@ export default function Layout() {
           </div>
         </div>
         <nav className="flex-1 p-4 space-y-1">
-          {NAV_ITEMS.map((item) => (
+          {navItems.map((item) => (
             <NavLink
               key={item.to}
               to={item.to}
@@ -72,7 +75,7 @@ export default function Layout() {
       {mobileOpen && (
         <div className="md:hidden fixed inset-0 z-20 bg-black/40" onClick={() => setMobileOpen(false)}>
           <div className="absolute top-14 inset-x-0 bg-sidebar p-4 space-y-1 shadow-lg" onClick={(e) => e.stopPropagation()}>
-            {NAV_ITEMS.map((item) => (
+            {navItems.map((item) => (
               <NavLink
                 key={item.to}
                 to={item.to}
@@ -104,7 +107,7 @@ export default function Layout() {
 
       {/* Mobile Bottom Nav */}
       <nav className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-card border-t border-border flex items-center justify-around px-2 py-2">
-        {NAV_ITEMS.map((item) => (
+        {navItems.map((item) => (
           <NavLink
             key={item.to}
             to={item.to}

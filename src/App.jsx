@@ -12,6 +12,7 @@ import Learning from '@/pages/Learning';
 import Assessment from '@/pages/Assessment';
 import Coach from '@/pages/Coach';
 import Insights from '@/pages/Insights';
+import AdminRoute from '@/components/AdminRoute';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -45,7 +46,9 @@ const AuthenticatedApp = () => {
         <Route path="/learning" element={<Learning />} />
         <Route path="/assessment" element={<Assessment />} />
         <Route path="/coach" element={<Coach />} />
-        <Route path="/insights" element={<Insights />} />
+        <Route element={<AdminRoute />}>
+          <Route path="/insights" element={<Insights />} />
+        </Route>
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
