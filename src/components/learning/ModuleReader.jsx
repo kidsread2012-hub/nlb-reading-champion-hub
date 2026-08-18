@@ -143,6 +143,7 @@ export default function ModuleReader({
   useEffect(() => {
     setSaved(loadProgress(module.id));
     completedRef.current = false;
+    window.scrollTo({ top: 0, behavior: 'auto' });
   }, [module.id]);
 
   const answeredCount = Object.keys(saved.answered).length;
