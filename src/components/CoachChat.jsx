@@ -19,6 +19,8 @@ export default function CoachChat() {
   const [sessionId, setSessionId] = useState(null);
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef(null);
+  const messagesContainerRef = useRef(null);
+  const prevLengthRef = useRef(0);
   const bootstrappedRef = useRef(false);
   const lastNameRef = useRef(null);
 
@@ -39,8 +41,15 @@ export default function CoachChat() {
   }, [location.state]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages]);
+    const prevLen = prevLengthRef.current;
+    prevLengthRef.current = messages.length;
+    // Fresh guided-practice opening: scroll to the top so the scene is read from the start.
+    if (mode === 'guided_roleplay' && prevLen === 0 && messages.length === 1) {
+      messagesContainerRef.current?.scrollTo({ top: 0, behavior: 'auto' });
+    } else {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [messages, mode]);
 
   const ensureSession = (type, title, context) => {
     if (sessionId) return sessionId;
@@ -224,7 +233,7 @@ export default function CoachChat() {
       )}
 
       {/* Messages / Empty state */}
-      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-4">
+      <div ref={messagesContainerRef} className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-4">
         {showEmptyState ? (
           <div className="max-w-xl mx-auto space-y-4 pt-4">
             <div className="rounded-2xl border border-border bg-card p-6">
