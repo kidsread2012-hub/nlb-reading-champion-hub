@@ -175,6 +175,7 @@ export default function ModuleReader({
   trackModules = [],
   progress = {},
   onSwitchModule,
+  restoreScroll = false,
 }) {
   const navigate = useNavigate();
   const { prefs, toggleTheme } = useAccessibility();
@@ -191,8 +192,27 @@ export default function ModuleReader({
   useEffect(() => {
     setSaved(loadProgress(module.id));
     completedRef.current = false;
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [module.id]);
+    const savedY = (() => {
+      try {
+        const raw = localStorage.getItem(`nlb_module_scroll_${module.id}`);
+        return raw ? parseInt(raw, 10) : null;
+      } catch {
+        return null;
+      }
+    })();
+    if (restoreScroll && savedY != null && !Number.isNaN(savedY)) {
+      requestAnimationFrame(() => {
+        window.scrollTo({ top: savedY, behavior: 'auto' });
+      });
+      try {
+        localStorage.removeItem(`nlb_module_scroll_${module.id}`);
+      } catch {
+        // ignore
+      }
+    } else {
+      window.scrollTo({ top: 0, behavior: 'auto' });
+    }
+  }, [module.id, restoreScroll]);
 
   const answeredCount = Object.keys(saved.answered).length;
   const noProgress = isIntro || isReference;
@@ -227,6 +247,11 @@ export default function ModuleReader({
       if (allCorrect) awardBadge('perfect_module');
       clearProgress(module.id);
       onComplete(module);
+    }
+    try {
+      localStorage.setItem(`nlb_module_scroll_${module.id}`, String(window.scrollY));
+    } catch {
+      // ignore
     }
     navigate('/coach', {
       state: {

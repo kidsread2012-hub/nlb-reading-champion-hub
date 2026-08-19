@@ -51,6 +51,7 @@ export default function Learning() {
   const [progress, setProgress] = useState({});
   const [loading, setLoading] = useState(true);
   const [activeModule, setActiveModule] = useState(null);
+  const [restoreScroll, setRestoreScroll] = useState(false);
 
   useEffect(() => {
     async function loadData() {
@@ -65,6 +66,7 @@ export default function Learning() {
           const target = mods.find((m) => m.id === reopenId);
           if (target) {
             setActiveModule(target);
+            setRestoreScroll(true);
             if (!getModuleProgressMap()[target.id]) {
               setModuleStatus(target.id, 'in_progress', target.title);
               setProgress(getModuleProgressMap());
@@ -84,6 +86,7 @@ export default function Learning() {
 
   const handleStartModule = (mod) => {
     setActiveModule(mod);
+    setRestoreScroll(false);
     if (!progress[mod.id]) {
       setModuleStatus(mod.id, 'in_progress', mod.title);
       setProgress(getModuleProgressMap());
@@ -92,6 +95,7 @@ export default function Learning() {
 
   const handleSwitchModule = (mod) => {
     setActiveModule(mod);
+    setRestoreScroll(false);
     if (!progress[mod.id]) {
       setModuleStatus(mod.id, 'in_progress', mod.title);
       setProgress(getModuleProgressMap());
@@ -123,6 +127,7 @@ export default function Learning() {
         trackModules={trackModules}
         progress={progress}
         onSwitchModule={handleSwitchModule}
+        restoreScroll={restoreScroll}
       />
     );
   }
