@@ -291,8 +291,8 @@ export default function AssessmentRunner({ clubs }) {
       </div>
 
       {/* Navigation */}
-      <div className="flex items-center justify-between mt-8 gap-3">
-        <Button variant="outline" size="lg" onClick={handleBack} className="text-base">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mt-8 gap-3">
+        <Button variant="outline" size="lg" onClick={handleBack} className="text-base w-full sm:w-auto">
           <ArrowLeft className="w-5 h-5 mr-2" />
           Back
         </Button>
@@ -300,7 +300,7 @@ export default function AssessmentRunner({ clubs }) {
           size="lg"
           onClick={handleNext}
           disabled={!canProceed()}
-          className="text-base"
+          className="text-base w-full sm:w-auto whitespace-normal break-words"
         >
           {step === totalSteps ? 'Submit Assessment' : 'Next Section'}
           <ArrowRight className="w-5 h-5 ml-2" />
