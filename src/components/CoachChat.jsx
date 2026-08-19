@@ -20,6 +20,7 @@ export default function CoachChat() {
   const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef(null);
   const messagesContainerRef = useRef(null);
+  const lastAssistantRef = useRef(null);
   const prevLengthRef = useRef(0);
   const bootstrappedRef = useRef(false);
   const lastNameRef = useRef(null);
@@ -46,9 +47,17 @@ export default function CoachChat() {
     // Fresh guided-practice opening: scroll to the top so the scene is read from the start.
     if (mode === 'guided_roleplay' && prevLen === 0 && messages.length === 1) {
       messagesContainerRef.current?.scrollTo({ top: 0, behavior: 'auto' });
-    } else {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      return;
     }
+    // When a new assistant response arrives, bring its top into view so it can be read from the start.
+    const last = messages[messages.length - 1];
+    if (last && last.role === 'assistant' && lastAssistantRef.current && messagesContainerRef.current) {
+      const el = lastAssistantRef.current;
+      const c = messagesContainerRef.current;
+      const target = el.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop;
+      c.scrollTo({ top: target, behavior: 'smooth' });
+    }
+    // User messages don't force a scroll.
   }, [messages, mode]);
 
   const ensureSession = (type, title, context) => {
@@ -280,7 +289,11 @@ export default function CoachChat() {
         ) : (
           <>
             {messages.map((msg, i) => (
-              <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+              <div
+                key={i}
+                ref={msg.role === 'assistant' && i === messages.length - 1 ? lastAssistantRef : null}
+                className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+              >
                 <div
                   className={`max-w-[85%] rounded-2xl px-4 py-3 ${
                     msg.role === 'user'
