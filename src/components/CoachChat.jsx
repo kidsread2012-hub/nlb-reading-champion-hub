@@ -167,9 +167,9 @@ export default function CoachChat() {
   const showEmptyState = messages.length === 0 && !loading && mode === 'coach' && !assessmentContext;
 
   return (
-    <div className="flex flex-col h-[calc(100vh-3.5rem-3.75rem)] md:h-screen max-w-3xl mx-auto">
+    <div className="flex flex-col h-[calc(100vh-3.5rem-5.5rem)] md:h-screen max-w-3xl mx-auto">
       {/* Header */}
-      <div className="px-4 md:px-6 py-4 border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
+      <div className="px-4 md:px-6 py-3 border-b border-border bg-card/60 backdrop-blur sticky top-0 z-10">
         <div className="flex items-center gap-3">
           {practiceContext?.module_id && (
             <Button
@@ -186,18 +186,18 @@ export default function CoachChat() {
               Back to module
             </Button>
           )}
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-primary/10 flex items-center justify-center">
             {mode === 'guided_roleplay' ? (
               <GraduationCap className="w-5 h-5 text-primary" />
             ) : (
               <Sparkles className="w-5 h-5 text-primary" />
             )}
           </div>
-          <div>
-            <h1 className="text-lg font-semibold">
+          <div className="min-w-0 flex-1">
+            <h1 className="text-lg font-semibold truncate">
               {mode === 'guided_roleplay' ? 'Guided Practice' : 'kidsREAD Volunteer Coach'}
             </h1>
-            <p className="text-sm text-muted-foreground">
+            <p className="text-sm text-muted-foreground truncate">
               {mode === 'guided_roleplay'
                 ? practiceContext?.title || 'Scenario practice'
                 : assessmentContext
@@ -208,11 +208,11 @@ export default function CoachChat() {
           <Button
             variant="outline"
             size="sm"
-            className="ml-auto shrink-0"
+            className="ml-auto shrink-0 md:px-3"
             onClick={() => setShowHistory(true)}
           >
-            <History className="w-4 h-4 mr-2" />
-            Past conversations
+            <History className="w-4 h-4 md:mr-2" />
+            <span className="hidden md:inline">Past conversations</span>
           </Button>
         </div>
       </div>
@@ -224,7 +224,7 @@ export default function CoachChat() {
       )}
 
       {/* Messages / Empty state */}
-      <div className="flex-1 overflow-y-auto px-4 py-6 space-y-4 pb-4">
+      <div className="flex-1 overflow-y-auto px-4 py-4 space-y-4 pb-4">
         {showEmptyState ? (
           <div className="max-w-xl mx-auto space-y-4 pt-4">
             <div className="rounded-2xl border border-border bg-card p-6">
@@ -296,7 +296,7 @@ export default function CoachChat() {
       </div>
 
       {/* Input */}
-      <div className="px-4 pt-4 pb-20 md:pb-4 border-t border-border bg-card">
+      <div className="px-4 pt-4 pb-4 border-t border-border bg-card">
         <div className="flex gap-2 items-end">
           <textarea
             value={input}
