@@ -375,7 +375,7 @@ export default function ModuleReader({
                 ? `Continue to "${nextModule.title}" to begin building your skills.`
                 : "You've reached the end of this introduction."}
             </p>
-            <Button size="lg" className="h-11" onClick={handleContinueIntro}>
+            <Button size="lg" className="h-11 w-full sm:w-auto max-w-full whitespace-normal break-words text-left sm:text-center" onClick={handleContinueIntro}>
               {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -392,7 +392,7 @@ export default function ModuleReader({
             <p className="text-sm text-muted-foreground mt-1 mb-4">
               {nextModule ? 'Keep going to learn the next set of sounds.' : "You've reached the end of this section."}
             </p>
-            <Button size="lg" className="h-11" onClick={handleContinueIntro}>
+            <Button size="lg" className="h-11 w-full sm:w-auto max-w-full whitespace-normal break-words text-left sm:text-center" onClick={handleContinueIntro}>
               {nextModule ? `Continue to ${nextModule.title}` : 'Back to modules'}
               <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
@@ -440,7 +440,7 @@ export default function ModuleReader({
                 </p>
                 <div className="mt-4 flex flex-col sm:flex-row gap-2 justify-center">
                   {nextModule && (
-                    <Button className="h-11" onClick={() => onSwitchModule(nextModule)}>
+                    <Button className="h-11 w-full sm:w-auto max-w-full whitespace-normal break-words text-left sm:text-center" onClick={() => onSwitchModule(nextModule)}>
                       Continue to {nextModule.title}
                       <ArrowRight className="w-4 h-4 ml-2" />
                     </Button>
