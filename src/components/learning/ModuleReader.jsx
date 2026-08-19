@@ -11,6 +11,20 @@ import { H2Renderer, H3Renderer } from './ModuleHeadings';
 import { useAccessibility } from '@/hooks/useAccessibility';
 import { useGamification } from '@/hooks/useGamification';
 
+function extractText(node) {
+  if (typeof node === 'string') return node;
+  if (Array.isArray(node)) return node.map(extractText).join('');
+  if (node?.props?.children) return extractText(node.props.children);
+  return '';
+}
+
+const PILLAR_COLORS = {
+  Read: 'text-red-600',
+  Play: 'text-green-600',
+  'Power Up': 'text-orange-600',
+  'Power Up!': 'text-orange-600',
+};
+
 const markdownComponents = {
   h2: H2Renderer,
   h3: H3Renderer,
@@ -18,7 +32,11 @@ const markdownComponents = {
   ul: ({ children }) => <ul className="text-base leading-relaxed text-foreground mb-4 pl-6 list-disc space-y-1.5">{children}</ul>,
   ol: ({ children }) => <ol className="text-base leading-relaxed text-foreground mb-4 pl-6 list-decimal space-y-1.5">{children}</ol>,
   li: ({ children }) => <li className="leading-relaxed">{children}</li>,
-  strong: ({ children }) => <strong className="font-semibold text-foreground">{children}</strong>,
+  strong: ({ children }) => {
+    const text = extractText(children).trim();
+    const color = PILLAR_COLORS[text];
+    return <strong className={color ? `font-semibold ${color}` : 'font-semibold text-foreground'}>{children}</strong>;
+  },
   blockquote: ({ children }) => (
     <blockquote className="border-l-4 border-primary/40 pl-4 py-1 my-4 italic text-muted-foreground bg-muted/40 rounded-r-lg">
       {children}
