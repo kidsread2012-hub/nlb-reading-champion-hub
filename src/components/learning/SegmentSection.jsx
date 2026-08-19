@@ -33,7 +33,7 @@ export default function SegmentSection({ segment, modules, progress, onStart }) 
         <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 ${segment.iconChipBg}`}>
           <Icon className={`w-5 h-5 ${segment.iconChipColor}`} />
         </div>
-        <h2 className="text-lg font-semibold text-foreground">{segment.name}</h2>
+        <h2 className={`text-lg font-semibold ${segment.iconChipColor}`}>{segment.name}</h2>
         <div className="flex-1 h-px bg-border/60" />
         <span className="text-sm text-muted-foreground shrink-0">
           {completedInSegment}/{modules.length}
