@@ -49,15 +49,18 @@ export default function CoachChat() {
       messagesContainerRef.current?.scrollTo({ top: 0, behavior: 'auto' });
       return;
     }
-    // When a new assistant response arrives, bring its top into view so it can be read from the start.
     const last = messages[messages.length - 1];
-    if (last && last.role === 'assistant' && lastAssistantRef.current && messagesContainerRef.current) {
+    if (!last || !messagesContainerRef.current) return;
+    if (last.role === 'user') {
+      // Scroll the just-sent message into view so the volunteer sees it immediately.
+      messagesContainerRef.current.scrollTo({ top: messagesContainerRef.current.scrollHeight, behavior: 'smooth' });
+    } else if (last.role === 'assistant' && lastAssistantRef.current) {
+      // Bring the new assistant response's top into view so it can be read from the start.
       const el = lastAssistantRef.current;
       const c = messagesContainerRef.current;
       const target = el.getBoundingClientRect().top - c.getBoundingClientRect().top + c.scrollTop;
       c.scrollTo({ top: target, behavior: 'smooth' });
     }
-    // User messages don't force a scroll.
   }, [messages, mode]);
 
   const ensureSession = (type, title, context) => {
