@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { ASSESSMENT_SECTIONS } from '@/lib/assessmentConfig';
@@ -26,6 +26,11 @@ export default function AssessmentRunner({ clubs }) {
 
   const totalSteps = ASSESSMENT_SECTIONS.length;
   const currentSection = ASSESSMENT_SECTIONS[step - 1];
+
+  // Scroll to top whenever the step or result changes so each screen starts at the top
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'auto' });
+  }, [step, result]);
 
   const handleToggle = (sectionId, item, value) => {
     setAnswers((prev) => ({
@@ -104,7 +109,7 @@ export default function AssessmentRunner({ clubs }) {
   // Metadata step
   if (step === 0) {
     return (
-      <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
+      <div className="max-w-2xl mx-auto px-4 pt-8 md:pt-12 pb-24 md:pb-8">
         <div className="mb-8 text-center">
           <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
             <ClipboardCheck className="w-8 h-8 text-primary" />
@@ -213,7 +218,7 @@ export default function AssessmentRunner({ clubs }) {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-6 md:py-8">
+    <div className="max-w-4xl mx-auto px-4 pt-6 md:pt-8 pb-24 md:pb-8">
       {/* Progress bar */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-2">
@@ -316,7 +321,7 @@ function AssessmentResult({ result, metadata, navigate }) {
   const level = levelInfo[result.proficiency_level] || levelInfo['Level 1'];
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8 md:py-12">
+    <div className="max-w-3xl mx-auto px-4 pt-8 md:pt-12 pb-24 md:pb-8">
       <div className="text-center mb-8">
         <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
           <Check className="w-8 h-8 text-emerald-600" />

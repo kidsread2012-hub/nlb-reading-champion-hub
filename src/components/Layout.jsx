@@ -98,7 +98,7 @@ export default function Layout() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 md:ml-64 pt-14 md:pt-0 min-h-screen">
+      <main className="flex-1 md:ml-64 pt-14 md:pt-0 min-h-screen min-w-0 overflow-x-hidden">
         <Outlet />
       </main>
 
