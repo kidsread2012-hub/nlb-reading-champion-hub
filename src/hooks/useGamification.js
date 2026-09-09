@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { getQuizStats, setQuizStats as persistQuizStats } from '@/lib/localStore';
+import { getQuizStats, setQuizStats as persistQuizStats } from '@/services';
 
 export const BADGE_DEFS = [
   { id: 'first_pop_quiz', name: 'First Pop Quiz', icon: 'Star', description: 'Answer your first pop quiz correctly' },

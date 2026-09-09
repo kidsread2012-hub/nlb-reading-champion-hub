@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
+import { content } from '@/services';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, BarChart3, TrendingUp, Users, Award, ShieldCheck } from 'lucide-react';
@@ -20,8 +20,8 @@ export default function Insights() {
     async function loadData() {
       try {
         const [assessmentsList, clubsList] = await Promise.all([
-          base44.entities.Assessment.list('-created_date', 500),
-          base44.entities.Club.list(),
+          content.listAssessments('-created_date', 500),
+          content.listClubs(),
         ]);
         setAssessments(assessmentsList);
         setClubs(clubsList);

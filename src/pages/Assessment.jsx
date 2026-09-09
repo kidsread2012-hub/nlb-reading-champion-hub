@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { base44 } from '@/api/base44Client';
 import AssessmentRunner from '@/components/AssessmentRunner';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ClipboardCheck, Plus, Loader2, FileText, Calendar, TrendingUp } from 'lucide-react';
-import { getAssessments } from '@/lib/localStore';
+import { content, getAssessments } from '@/services';
 
 export default function Assessment() {
   const [clubs, setClubs] = useState([]);
@@ -15,7 +14,7 @@ export default function Assessment() {
   useEffect(() => {
     async function loadData() {
       try {
-        const clubList = await base44.entities.Club.list();
+        const clubList = await content.listClubs();
         setClubs(clubList);
         setRecentAssessments(getAssessments().slice(0, 5));
       } catch (err) {

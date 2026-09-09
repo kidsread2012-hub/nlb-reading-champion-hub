@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { ASSESSMENT_SECTIONS } from '@/lib/assessmentConfig';
+import { ASSESSMENT_SECTIONS } from '@/data/assessmentConfig';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Check, X, ArrowRight, ArrowLeft, Loader2, ClipboardCheck, MessageCircle } from 'lucide-react';
-import { addAssessment } from '@/lib/localStore';
+import { assessment, addAssessment } from '@/services';
 
 export default function AssessmentRunner({ clubs }) {
   const navigate = useNavigate();
@@ -69,7 +68,7 @@ export default function AssessmentRunner({ clubs }) {
     setSubmitting(true);
     setError(null);
     try {
-      const response = await base44.functions.invoke('processAssessment', {
+      const response = await assessment.process({
         test_type: metadata.test_type,
         child_name: metadata.child_name.trim(),
         club_name: metadata.club_name,

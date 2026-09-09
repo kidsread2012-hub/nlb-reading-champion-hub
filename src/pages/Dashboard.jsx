@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { BookOpen, ClipboardCheck, MessageCircle, ArrowRight, Award } from 'lucide-react';
 import BadgesCard from '@/components/learning/BadgesCard';
 import { useGamification } from '@/hooks/useGamification';
-import { getModuleCompletions, getAssessments } from '@/lib/localStore';
+import { content, getModuleCompletions, getAssessments } from '@/services';
 
 export default function Dashboard() {
   const [stats, setStats] = useState({ assessments: 0, completedModules: 0, totalModules: 0 });
@@ -16,7 +15,7 @@ export default function Dashboard() {
   useEffect(() => {
     async function loadStats() {
       try {
-        const modules = await base44.entities.LearningModule.list('order', 50);
+        const modules = await content.listModules('order', 50);
         const completions = getModuleCompletions();
         const completedModules = Object.values(completions).filter((c) => c.status === 'completed').length;
         const assessments = getAssessments();

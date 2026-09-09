@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Volume2 } from 'lucide-react';
-import { LETTER_SOUND_DATA } from '@/lib/letterSounds';
+import { LETTER_SOUND_DATA } from '@/data/letterSounds';
 import { onPlayingChange, playAudio, playTTS, stopAll, getPlayingLetter } from '@/lib/letterAudioManager';
 
 export default function LetterSoundCard({ letter, word }) {

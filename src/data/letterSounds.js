@@ -1,5 +1,6 @@
-// Central mapping of letter → phoneme text (for browser TTS fallback) + audio clip URL.
-// Audio clips are generated British-English pronunciations hosted on Base44.
+// Letter-sound reference data.
+// Maps each letter/digraph to its phoneme text (for browser TTS fallback) and
+// an audio clip URL (British-English pronunciation).
 // The LetterSoundCard prefers audioUrl when present and falls back to SpeechSynthesis (en-GB).
 
 export const LETTER_SOUND_DATA = {

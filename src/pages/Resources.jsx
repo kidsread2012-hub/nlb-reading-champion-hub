@@ -1,6 +1,6 @@
 import React from 'react';
 import { Library } from 'lucide-react';
-import { RESOURCES } from '@/lib/resources';
+import { RESOURCES } from '@/data/resources';
 import { ResourceVideoCard, ResourceLinkCard } from '@/components/resources/ResourceCards';
 
 export default function Resources() {

@@ -1,6 +1,6 @@
 // Resource library, grouped by topic. Add a resource by appending one entry
 // to the matching topic below.
-// type: 'video' (YouTube embed) | 'link' (external page, opens new tab)
+// type: 'video' (YouTube embed) | 'link' (external page, opens new tab) | 'wip' (placeholder)
 
 export const RESOURCES = [
   {

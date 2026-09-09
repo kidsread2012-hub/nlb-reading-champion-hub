@@ -1,77 +1,143 @@
-# Base44 Project
+# NLB Reading Champion Hub
 
-Use this repository to run and edit the app locally, then publish changes back through Base44.
+An all-in-one training platform for NLB kidsREAD reading volunteers: self-paced
+learning modules, a student assessment tool, and a personalised AI coach.
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+Built on [Base44](https://base44.com) (React + Tailwind + Vite). The codebase is
+structured so the app can be exported and deployed on another platform with
+minimal changes — all Base44-specific code is isolated behind a service adapter.
 
-## Prerequisites
+---
 
-1. Clone the repository using the project's Git URL.
-2. Navigate to the project directory.
-3. Install dependencies: `npm install`.
-4. Install the Base44 CLI: `npm install -g base44@latest`.
+## Directory structure
 
-See the [Base44 CLI docs](https://docs.base44.com/developers/references/cli/get-started/overview) if you want to run Base44 commands directly.
+```
+src/
+  api/
+    base44Client.js        # Base44 SDK instance (used only by the service adapter)
+  data/                    # All programme CONTENT as plain, serialisable files
+    letterSounds.js        #   letter → phoneme + audio clip mapping
+    resources.js           #   resource library (links, videos, placeholders)
+    assessmentConfig.js     #   assessment section definitions (client-side)
+    namePool.js             #   child names for guided-practice scenarios
+    segments.js             #   learning segment visual/metadata config
+  services/                # Data-access & integration layer (the abstraction)
+    index.js                #   public API — pages import from here
+    base44Adapter.js        #   Base44 implementation (the ONLY file using the SDK)
+    localProgress.js        #   device-local progress store (localStorage)
+  lib/                     # Framework utilities (auth, routing, query client)
+  hooks/                   # React hooks (gamification, accessibility)
+  components/              # Reusable UI components
+    ui/                     #   shadcn/ui primitives
+    learning/               #   module reader, checkpoints, letter sounds
+    coach/                  #   coach conversation history
+    resources/              #   resource cards
+  pages/                   # Route-level page components
 
-## Run Locally
-
-Run the full local development environment from the project root:
-
-```bash
-base44 dev
+base44/
+  entities/                # Database entity schemas (JSON)
+  functions/               # Backend functions (HTTP handlers)
+    chatWithCoach/          #   AI coach conversation
+    generateCheckpointOptions/  # pop-quiz option generator
+    ingestCoachKnowledge/  #   admin: ingest a document into the knowledge base
+    processAssessment/      #   score a completed assessment
+  shared/                  # Framework-agnostic logic shared across functions
+    assessmentConfig.ts     #   assessment sections + scoring logic
+    coachPrompts.ts         #   coach system-prompt builder (pure function)
+    checkpointPrompts.ts    #   checkpoint prompt builder (pure function)
+  workflows/               # Automated workflows (JSON)
+  agents/                  # In-app AI agent configs (JSON)
 ```
 
-`base44 dev` starts the local Base44 development backend and, when this app is configured for it, also starts the frontend dev server for you. Use the frontend URL printed by the command.
+---
 
-For example, when the Base44 project config includes a `serveCommand`, `base44 dev` can launch the frontend too:
+## Where content lives
 
-```json5
-{
-  "site": {
-    "serveCommand": "npm run dev"
-  }
-}
+| Content                 | Location                          | Notes                                  |
+| ----------------------- | --------------------------------- | -------------------------------------- |
+| Letter sounds & audio   | `src/data/letterSounds.js`        | Audio clips hosted on Base44 storage   |
+| Resource links/videos   | `src/data/resources.js`           | Edit here to add/remove resources      |
+| Assessment sections     | `src/data/assessmentConfig.js`   | Client display; scoring in `shared/`   |
+| Learning modules        | `LearningModule` entity (DB)      | Created/edited as database records     |
+| Coach knowledge base    | `CoachKnowledge` entity (DB)      | Ingested via `ingestCoachKnowledge`    |
+| Volunteer progress      | `src/services/localProgress.js`   | localStorage (prototype, device-local)|
+| Coach conversations     | `src/services/localProgress.js`   | localStorage (prototype, device-local)|
+
+---
+
+## The service layer (how the app stays portable)
+
+Pages and components **never** import the Base44 SDK directly. They import from
+`@/services`, which re-exports a small, stable surface:
+
+```js
+import { content, ai, assessment, getModuleCompletions } from '@/services';
+
+const modules = await content.listModules('order', 50);
+const coachReply = await ai.chatWithCoach({ message, conversation_history });
+const result = await assessment.process({ test_type, child_name, answers });
 ```
 
-In a Base44 project this lives in `base44/config.jsonc`.
+The surface is:
 
-## Run Only The Frontend
+- **`content`** — `listModules`, `listClubs`, `listAssessments`
+- **`ai`** — `chatWithCoach`, `generateCheckpointOptions`
+- **`assessment`** — `process`
+- **`files`** — `upload`, `uploadPrivate`, `signedUrl`
+- **progress** — `getModuleCompletions`, `setModuleStatus`, `getModuleProgressMap`,
+  `getQuizStats`, `setQuizStats`, `getAssessments`, `addAssessment`,
+  `getCoachSessions`, `addCoachSession`, `deleteCoachSession`,
+  `getCoachConversation`, `addCoachMessage`, `clearAllProgress`
 
-If you only want to work on the frontend against the hosted Base44 backend, run:
+### Swapping the backend
+
+`src/services/index.js` re-exports from `./base44Adapter`. To deploy elsewhere:
+
+1. Write a new adapter (e.g. `src/services/customAdapter.js`) implementing the
+   same surface (`content`, `ai`, `assessment`, `files`) against your backend.
+2. Point `src/services/index.js` at it. No page code changes.
+
+The progress store (`localProgress.js`) is similarly swappable — replace the
+re-export in `index.js` with a server-backed store implementing the same
+function signatures.
+
+---
+
+## Backend function portability
+
+Each backend function's **core logic** lives in `base44/shared/` as a pure
+function with no SDK or HTTP dependencies:
+
+- `shared/coachPrompts.ts` → `buildCoachSystemPrompt()`
+- `shared/checkpointPrompts.ts` → `buildCheckpointPrompt()` + response schema
+- `shared/assessmentConfig.ts` → `calculateAssessmentResults()`
+
+The `entry.ts` in each function folder is a **thin Base44 wrapper** that parses
+the request, calls the shared logic, invokes the LLM/entity via the SDK, and
+returns a `Response`. To run the same logic on another platform (Express,
+Vercel, etc.), write a new thin wrapper that calls the shared module — the
+logic itself moves unchanged.
+
+---
+
+## Auth
+
+Authentication runs through `src/lib/AuthContext.jsx`, which uses the Base44
+SDK directly (`base44.auth.me()`, `logout`, `redirectToLogin`). This is the one
+remaining Base44-coupled module. The app currently runs in prototype mode with
+no auth gate; to use a different auth provider, replace `AuthContext` with an
+implementation exposing the same context shape (`user`, `isAuthenticated`,
+`isLoadingAuth`, `isLoadingPublicSettings`, `authError`, `logout`,
+`navigateToLogin`).
+
+---
+
+## Running locally
 
 ```bash
+npm install
 npm run dev
 ```
 
-Open the local URL printed by Vite.
-
-## Use The Hosted Backend
-
-For frontend-only development, create or update `.env.local` in the project root:
-
-```bash
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=https://your-app.base44.app
-```
-
-`VITE_BASE44_APP_ID` identifies the Base44 app.
-
-`VITE_BASE44_APP_BASE_URL` tells the Base44 Vite plugin where to send local `/api` requests. Point it at your deployed Base44 app URL when you want the local frontend to use the hosted backend.
-
-When you use `base44 dev`, the command injects the local Base44 values for you, so `.env.local` is mainly needed for frontend-only workflows.
-
-## Publish Your Changes
-
-After pushing your changes to git, open the Base44 dashboard and publish the app:
-
-```bash
-base44 dashboard open
-```
-
-## Docs & Support
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Base44 CLI command reference: [https://docs.base44.com/developers/references/cli/commands/introduction](https://docs.base44.com/developers/references/cli/commands/introduction)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+The app expects Base44 environment variables (`VITE_BASE44_APP_ID`, etc.) to be
+present, injected by the Base44 platform at build time.

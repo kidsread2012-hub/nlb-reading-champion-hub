@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { HelpCircle, Loader2, CheckCircle2, XCircle, Lightbulb, RotateCcw } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
+import { ai } from '@/services';
 
 // Module-level cache keyed by checkpoint prompt — avoids re-calling the LLM
 const cache = new Map();
@@ -24,7 +24,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
     let cancelled = false;
     (async () => {
       try {
-        const res = await base44.functions.invoke('generateCheckpointOptions', {
+        const res = await ai.generateCheckpointOptions({
           prompt: checkpoint.prompt,
           model_answer: checkpoint.model_answer,
         });
@@ -63,7 +63,7 @@ export default function CheckpointCard({ checkpoint, index = 1, initialSelected 
     cache.delete(checkpoint.prompt);
     (async () => {
       try {
-        const res = await base44.functions.invoke('generateCheckpointOptions', {
+        const res = await ai.generateCheckpointOptions({
           prompt: checkpoint.prompt,
           model_answer: checkpoint.model_answer,
         });

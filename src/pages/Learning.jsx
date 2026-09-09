@@ -1,49 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
-import { Loader2, Zap, BookOpen } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
+import { SEGMENTS } from '@/data/segments';
 import SegmentSection from '@/components/learning/SegmentSection';
 import ModuleReader from '@/components/learning/ModuleReader';
-import { getModuleProgressMap, setModuleStatus } from '@/lib/localStore';
-
-const SEGMENTS = [
-  {
-    id: 'power_up',
-    name: 'Power Up',
-    tagline: 'Growing confident, independent readers',
-    icon: Zap,
-    iconBg: 'bg-orange-500',
-    iconColor: 'text-white',
-    panelBg: 'bg-white',
-    panelBorder: 'border-orange-200/70',
-    bandBg: 'bg-orange-100',
-    titleColor: 'text-orange-900',
-    subtitleColor: 'text-orange-700/80',
-    accent: 'orange',
-    accentHex: '#EA580C',
-    leftEdge: 'border-l-4 border-l-orange-500',
-    iconChipBg: 'bg-orange-100',
-    iconChipColor: 'text-orange-600',
-  },
-  {
-    id: 'storytelling',
-    name: 'Read',
-    tagline: 'Reading aloud & storytelling',
-    icon: BookOpen,
-    iconBg: 'bg-red-600',
-    iconColor: 'text-white',
-    panelBg: 'bg-white',
-    panelBorder: 'border-red-200/70',
-    bandBg: 'bg-red-100',
-    titleColor: 'text-red-900',
-    subtitleColor: 'text-red-700/80',
-    accent: 'red',
-    accentHex: '#DC2626',
-    leftEdge: 'border-l-4 border-l-red-600',
-    iconChipBg: 'bg-red-100',
-    iconChipColor: 'text-red-600',
-  },
-];
+import { content, getModuleProgressMap, setModuleStatus } from '@/services';
 
 export default function Learning() {
   const location = useLocation();
@@ -56,7 +17,7 @@ export default function Learning() {
   useEffect(() => {
     async function loadData() {
       try {
-        const mods = await base44.entities.LearningModule.list('order', 50);
+        const mods = await content.listModules('order', 50);
         setModules(mods);
         setProgress(getModuleProgressMap());
 

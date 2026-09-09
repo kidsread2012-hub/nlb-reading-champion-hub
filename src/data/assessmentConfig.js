@@ -1,4 +1,6 @@
-// Assessment section definitions — mirrors base44/shared/assessmentConfig.ts for client-side use
+// Assessment section definitions used by the client-side AssessmentRunner.
+// The scoring logic itself lives in base44/shared/assessmentConfig.ts (used by
+// the processAssessment backend function) so client and server stay in sync.
 
 export const ASSESSMENT_SECTIONS = [
   { id: "group1_letters", name: "Group 1 Letters", subtitle: "Letter Sounds", items: ["s", "a", "t", "i", "p", "n"], order: 1 },

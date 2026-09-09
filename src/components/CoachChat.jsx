@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Send, Loader2, Sparkles, ShieldAlert, GraduationCap, MessageCircle, ArrowLeft, History } from 'lucide-react';
-import { pickName, pickNames } from '@/lib/namePool';
+import { pickName, pickNames } from '@/data/namePool';
 import ConversationHistory from '@/components/coach/ConversationHistory';
-import { addCoachSession, addCoachMessage, getCoachConversation } from '@/lib/localStore';
+import { ai, addCoachSession, addCoachMessage, getCoachConversation } from '@/services';
 
 export default function CoachChat() {
   const location = useLocation();
@@ -92,7 +91,7 @@ export default function CoachChat() {
       setLoading(true);
       (async () => {
         try {
-          const response = await base44.functions.invoke('chatWithCoach', {
+          const response = await ai.chatWithCoach({
             message: "Let's begin the guided practice. Please describe the setting and the child, then ask me what I would do first.",
             conversation_history: [],
             practice_context: enrichedCtx,
@@ -140,7 +139,7 @@ export default function CoachChat() {
     setInput('');
     setLoading(true);
     try {
-      const response = await base44.functions.invoke('chatWithCoach', {
+      const response = await ai.chatWithCoach({
         message: userMessage.content,
         conversation_history: messages,
         assessment_context: assessmentContext,

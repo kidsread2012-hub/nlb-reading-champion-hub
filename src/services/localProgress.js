@@ -1,5 +1,8 @@
-// Device-local store for the prototype. All volunteer progress lives in
-// localStorage on this device — no database writes, no user accounts.
+// Device-local progress store for the prototype.
+// All volunteer progress lives in localStorage on this device — no database
+// writes, no user accounts. This module is the "progress adapter"; a different
+// backend (e.g. a real database) would provide a drop-in replacement with the
+// same exported function signatures.
 
 const KEYS = {
   COMPLETIONS: 'nlb_module_completions',
