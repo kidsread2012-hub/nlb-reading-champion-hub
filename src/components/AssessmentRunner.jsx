@@ -16,7 +16,6 @@ export default function AssessmentRunner({ clubs }) {
     test_type: 'pre',
     child_name: '',
     club_name: '',
-    volunteer_email: '',
   });
   const [answers, setAnswers] = useState({});
   const [submitting, setSubmitting] = useState(false);
@@ -172,20 +171,6 @@ export default function AssessmentRunner({ clubs }) {
                   ))}
                 </SelectContent>
               </Select>
-            </div>
-
-            <div>
-              <Label htmlFor="volunteer_email" className="text-base font-semibold mb-2 block">
-                Your Email <span className="text-muted-foreground font-normal">(optional)</span>
-              </Label>
-              <Input
-                id="volunteer_email"
-                type="email"
-                value={metadata.volunteer_email}
-                onChange={(e) => setMetadata({ ...metadata, volunteer_email: e.target.value })}
-                placeholder="e.g. yourname@example.com"
-                className="text-lg h-12"
-              />
             </div>
 
             {error && <p className="text-destructive text-sm">{error}</p>}
