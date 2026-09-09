@@ -216,7 +216,7 @@ export default function CoachChat() {
           </div>
           <div className="min-w-0 flex-1">
             <h1 className="text-lg font-semibold truncate">
-              {mode === 'guided_roleplay' ? 'Guided Practice' : 'kidsREAD Volunteer Coach'}
+              {mode === 'guided_roleplay' ? 'Guided Practice' : 'kidsREAD AI Coach'}
             </h1>
             <p className="text-sm text-muted-foreground truncate">
               {mode === 'guided_roleplay'
