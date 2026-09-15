@@ -9,7 +9,15 @@ export function buildCoachSystemPrompt(
   knowledgeText: string
 ): string {
   if (practiceContext) {
-    const isGroup = practiceContext.segment === 'storytelling';
+    const segment = practiceContext.segment;
+    const isGroup = segment === 'storytelling';
+    const isPowerUp = segment === 'power_up';
+    const componentName = isGroup ? 'Read' : isPowerUp ? 'Power Up' : 'kidsREAD reading';
+    const componentMaterials = isGroup
+      ? 'a big picture book for read-aloud'
+      : isPowerUp
+        ? 'letter sound cards, blending tiles, word cards, and tricky-word cards — NOT picture books (Power Up sessions focus on letter sounds and word-building, not storybooks)'
+        : 'reading materials appropriate to the session';
     const childName = practiceContext.child_name || null;
     const childNames: string[] = Array.isArray(practiceContext.child_names) ? practiceContext.child_names : [];
     const nameClause = isGroup && childNames.length > 0
@@ -18,11 +26,11 @@ export function buildCoachSystemPrompt(
         ? `The child's name for this session is ${childName}. Use this name consistently when describing the child.`
         : '';
     const groupExample = childNames.length > 0
-      ? `A group of about eight children are sitting in a semicircle on the mat in front of you — including ${childNames.slice(0, 3).join(', ')}. A big picture book is ready for you to read aloud. What would you do first?`
-      : `A group of about eight children are sitting in a semicircle on the mat in front of you, and a big picture book is ready for you to read aloud. What would you do first?`;
+      ? `A group of about eight children are sitting in a semicircle on the mat in front of you — including ${childNames.slice(0, 3).join(', ')}. ${isGroup ? 'A big picture book is ready for you to read aloud.' : 'Letter sound cards and word cards are laid out on the mat.'} What would you do first?`
+      : `A group of about eight children are sitting in a semicircle on the mat in front of you, and ${isGroup ? 'a big picture book is ready for you to read aloud.' : 'letter sound cards and word cards are laid out on the mat.'} What would you do first?`;
     const soloExample = childName
-      ? `A young child named ${childName} is sitting on a small chair across from you, with a picture book ready on the table. What would you do first?`
-      : `A young child is sitting on a small chair across from you, with a picture book ready on the table. What would you do first?`;
+      ? `A young child named ${childName} is sitting on a small chair across from you, with ${isGroup ? 'a picture book ready on the table.' : 'letter sound cards and blending tiles laid out on the table.'} What would you do first?`
+      : `A young child is sitting on a small chair across from you, with ${isGroup ? 'a picture book ready on the table.' : 'letter sound cards and blending tiles laid out on the table.'} What would you do first?`;
     const groupReact = childNames.length > 0
       ? `${childNames[0]} raises a hand and asks: "What happens next?"`
       : `Mei raises her hand and asks: "What happens next?"`;
@@ -33,11 +41,13 @@ CRITICAL RULE — NEVER use "I" or "me" to refer to yourself as the child or as 
 ${nameClause ? `\nNAME(S) FOR THIS SESSION: ${nameClause}\n` : ''}
 SCENARIO: ${practiceContext.scenario_prompt || 'A general kidsREAD reading session.'}
 
+COMPONENT: This guided practice is for the ${componentName} component of kidsREAD. The materials for this session are ${componentMaterials}. Make it clear to the volunteer at the opening which component they are practising, and use only these materials when setting the scene — never introduce picture books into a Power Up session, and never introduce letter sound cards into a Read session.
+
 SETTING: kidsREAD sessions are held in a room or classroom at a partner organisation's premises (e.g. a community centre, school, charity centre, or similar venue) — NOT a library. Always set the scene in this kind of room/classroom setting, never in a library.
 
 SESSION FORMAT: ${isGroup
-  ? `This is a Read (storytelling) session, which takes place in a GROUP setting. A small group of about 6-10 children are sitting in a semicircle or on a mat facing you. You read aloud to the group and facilitate shared discussion. Describe the group and individual children within it in the third person. You may name individual children in the group to make the scenario feel real, but always keep the group context — never reduce it to a one-on-one.`
-  : `This is a one-on-one session. A single child is sitting across from you at a low table.`}
+  ? `This is a Read (storytelling) session, which takes place in a GROUP setting. A small group of about 6-10 children are sitting in a semicircle or on a mat facing you. You read aloud from a big picture book to the group and facilitate shared discussion. Describe the group and individual children within it in the third person. You may name individual children in the group to make the scenario feel real, but always keep the group context — never reduce it to a one-on-one.`
+  : `This is a ${isPowerUp ? 'Power Up' : 'one-on-one'} session. A single child is sitting across from you at a low table${isPowerUp ? ' with letter sound cards, blending tiles, and word cards ready' : ''}.`}
 
 TERMINOLOGY — this programme is about building Reading Confidence. The early-reading segment is called "Power Up". NEVER use the term "phonics" or "phonics activity". Always frame the work as Power Up activities, letter sounds, blending, segmenting, tricky words, letter formation, blends and digraphs, and reading confidence.
 
